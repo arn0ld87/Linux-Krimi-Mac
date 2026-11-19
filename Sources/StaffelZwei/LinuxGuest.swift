@@ -15,6 +15,15 @@ final class LinuxGuest: NSObject, VZVirtualMachineDelegate {
         let checks: Set<String>?
         let accepted: Bool?
         let error: String?
+        let terminalOutput: Data?
+        let terminalPrompt: Bool?
+        let terminalClosed: Bool?
+        let terminalDesktop: Bool?
+    }
+
+    struct TerminalSize: Encodable, Equatable {
+        var rows = 24
+        var cols = 80
     }
 
     private struct Request: Encodable {
@@ -26,6 +35,9 @@ final class LinuxGuest: NSObject, VZVirtualMachineDelegate {
         let step: String?
         let answer: String?
         let desktop: String?
+        let terminal: String?
+        let terminalBytes: Data?
+        let terminalSize: TerminalSize?
     }
 
     private let directory: URL
@@ -41,6 +53,7 @@ final class LinuxGuest: NSObject, VZVirtualMachineDelegate {
     private var ready = false
     private var bootFailure: String?
     private let writer = DispatchQueue(label: "StaffelZwei.LinuxGuest.input")
+    var onTerminalEvent: ((Reply) -> Void)?
 
     private var disk: URL { directory.appendingPathComponent("linux-arm64.raw") }
     var displayMachine: VZVirtualMachine? { machine }
@@ -83,6 +96,35 @@ final class LinuxGuest: NSObject, VZVirtualMachineDelegate {
 
     func desktop(_ action: String, cwd: String) async throws -> Reply {
         try await exchange(command: "", cwd: cwd, seed: nil, desktop: action)
+    }
+
+    func openTerminal(cwd: String, size: TerminalSize, maintenance: Bool) async throws {
+        _ = try await exchange(command: "", cwd: cwd, seed: nil,
+                               terminal: maintenance ? "maintenance" : "start", terminalSize: size)
+    }
+
+    func sendTerminal(_ bytes: Data) {
+        // A large paste must still fit within the guest's per-message limit.
+        let chunkSize = 16 * 1024
+        for start in stride(from: bytes.startIndex, to: bytes.endIndex, by: chunkSize) {
+            let end = min(start + chunkSize, bytes.endIndex)
+            sendTerminalEvent("input", bytes: bytes[start..<end])
+        }
+    }
+
+    func resizeTerminal(_ size: TerminalSize) {
+        sendTerminalEvent("resize", size: size)
+    }
+
+    private func sendTerminalEvent(_ action: String, bytes: Data? = nil, size: TerminalSize? = nil) {
+        guard ready, let handle = input?.fileHandleForWriting,
+              var payload = try? JSONEncoder().encode(
+                Request(id: UUID(), command: "", cwd: "", seed: nil, episode: episode, step: nil,
+                        answer: nil, desktop: nil, terminal: action, terminalBytes: bytes, terminalSize: size)
+              ) else { return }
+        payload.append(0x0A)
+        let data = payload
+        writer.async { try? handle.write(contentsOf: data) }
     }
 
     func stop() async throws {
@@ -183,13 +225,15 @@ final class LinuxGuest: NSObject, VZVirtualMachineDelegate {
     }
 
     private func exchange(command: String, cwd: String, seed: [String: String]?,
-                          step: String? = nil, answer: String? = nil, desktop: String? = nil) async throws -> Reply {
+                          step: String? = nil, answer: String? = nil, desktop: String? = nil,
+                          terminal: String? = nil, terminalSize: TerminalSize? = nil) async throws -> Reply {
         guard pending == nil, let handle = input?.fileHandleForWriting else {
             throw GuestError("Das Linux-Terminal ist belegt.")
         }
         let id = UUID()
         var encoded = try JSONEncoder().encode(Request(id: id, command: command, cwd: cwd, seed: seed,
-                                                       episode: episode, step: step, answer: answer, desktop: desktop))
+                                                       episode: episode, step: step, answer: answer, desktop: desktop,
+                                                       terminal: terminal, terminalBytes: nil, terminalSize: terminalSize))
         encoded.append(0x0A)
         let data = encoded
         return try await withCheckedThrowingContinuation { continuation in
@@ -229,6 +273,8 @@ final class LinuxGuest: NSObject, VZVirtualMachineDelegate {
             }
             if reply.ready == true {
                 ready = true
+            } else if reply.terminalOutput != nil || reply.terminalClosed == true {
+                onTerminalEvent?(reply)
             } else if let pending, reply.id == pending.0 {
                 if let error = reply.error {
                     finish(.failure(GuestError(error)))
@@ -259,6 +305,7 @@ final class LinuxGuest: NSObject, VZVirtualMachineDelegate {
         buffer.removeAll()
         bootLog = ""
         ready = false
+        onTerminalEvent = nil
         bootFailure = nil
         finish(.failure(GuestError("Die Linux-VM wurde beendet.")))
     }

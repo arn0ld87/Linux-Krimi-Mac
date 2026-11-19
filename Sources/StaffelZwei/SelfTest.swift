@@ -102,14 +102,69 @@ enum SelfTest {
             finish(code: 1)
             return
         }
-        guard let field = terminalField(in: window) else {
-            check("terminal input field exists", false)
+        let terminal = model.terminalSurface.view
+        guard terminal.window === window, model.interactiveShellOpen else {
+            check("interactive terminal is attached and running", false)
             finish(code: 1)
             return
         }
-        check("terminal input field exists", true)
-        window.makeFirstResponder(field)
+        check("interactive terminal is attached and running", true)
+        check("terminal accepts keyboard focus", window.makeFirstResponder(terminal))
         try? await Task.sleep(for: .milliseconds(250))
+
+        var prompt = model.terminalPromptCount
+        type("cd /srv/rechenwerk/uebu", into: window)
+        pressKey("\t", code: 48, into: window)
+        pressReturn(into: window)
+        await waitForPrompt(after: prompt, model: model)
+        check("Tab completes a real path in Bash", model.state.cwd == "/srv/rechenwerk/uebung", model.state.cwd)
+
+        prompt = model.terminalPromptCount
+        type("printf 'history-%s\\n' works", into: window)
+        pressReturn(into: window)
+        await waitForPrompt(after: prompt, model: model)
+        prompt = model.terminalPromptCount
+        pressKey(String(UnicodeScalar(NSUpArrowFunctionKey)!), code: 126, into: window)
+        pressReturn(into: window)
+        await waitForPrompt(after: prompt, model: model)
+        check("Up arrow runs the recalled command", terminalText(model).components(separatedBy: "history-works").count == 3)
+
+        prompt = model.terminalPromptCount
+        type("sleep 30", into: window)
+        pressReturn(into: window)
+        try? await Task.sleep(for: .milliseconds(300))
+        pressKey("c", code: 8, modifiers: .control, into: window)
+        await waitForPrompt(after: prompt, model: model)
+        check("Ctrl-C interrupts a running Linux process", model.terminalPromptCount > prompt)
+
+        pressKey("r", code: 15, modifiers: [.control, .option, .command], into: window, queued: true)
+        let shortcutDeadline = ContinuousClock.now + .seconds(2)
+        while !model.requestsMaintenance, ContinuousClock.now < shortcutDeadline {
+            try? await Task.sleep(for: .milliseconds(25))
+        }
+        check("maintenance shortcut opens a confirmation", model.requestsMaintenance)
+        model.requestsMaintenance = false
+        try? await Task.sleep(for: .milliseconds(250))
+        prompt = model.terminalPromptCount
+        await model.openInteractiveTerminal(maintenance: true)
+        await waitForPrompt(after: prompt, model: model)
+        window.makeFirstResponder(terminal)
+        prompt = model.terminalPromptCount
+        type("printf 'guest-uid=%s\\n' \"$(id -u)\"", into: window)
+        pressReturn(into: window)
+        await waitForPrompt(after: prompt, model: model)
+        check("maintenance shell actually runs as guest root",
+              model.maintenanceShell && terminalText(model).contains("guest-uid=0"))
+        prompt = model.terminalPromptCount
+        type("exit", into: window)
+        pressReturn(into: window)
+        await waitForPrompt(after: prompt, model: model)
+        prompt = model.terminalPromptCount
+        type("printf 'guest-uid=%s\\n' \"$(id -u)\"", into: window)
+        pressReturn(into: window)
+        await waitForPrompt(after: prompt, model: model)
+        check("exit restores the unprivileged shell",
+              !model.maintenanceShell && terminalText(model).contains("guest-uid=1000"))
 
         let commands = [
             "uname -sm",
@@ -119,21 +174,15 @@ enum SelfTest {
             "cp /srv/rechenwerk/uebung/kaffeekasse.bak /srv/rechenwerk/uebung/kaffeekasse.csv",
         ]
         for command in commands {
-            let before = model.state.transcript.count
+            let before = model.terminalPromptCount
             type(command, into: window)
-            let typed = model.terminalInput == command
-            check("typed text reaches the field: \(command)", typed,
-                  typed ? "" : "field held \"\(model.terminalInput)\"")
             pressReturn(into: window)
-            await waitForTerminal(model)
-            let transcript = model.state.transcript
-            check("command ran: \(command)",
-                  transcript.count > before && transcript.contains { $0.text.contains(command) })
+            await waitForPrompt(after: before, model: model)
+            check("command returned to the Bash prompt: \(command)", model.terminalPromptCount > before)
         }
         try? await Task.sleep(for: .milliseconds(300))
 
-        check("commands run on ARM64 Linux",
-              model.state.transcript.contains { $0.kind == .output && $0.text.contains("Linux aarch64") })
+        check("commands run on ARM64 Linux", terminalText(model).contains("Linux aarch64"))
         check("evidence 'Metadaten der Kaffeekasse' is validated",
               model.state.evidences.first { $0.specID == "kasse-meta" }?.validated == true)
         check("evidence 'Zeilen um den 15. April' is validated",
@@ -254,7 +303,12 @@ enum SelfTest {
             ]),
         ]
 
-        check("episode 4 locked before episode 3 is solved", !model.isUnlocked(EpisodeCatalog.episode(id: 4)))
+        for id in (0...7).reversed() {
+            model.selectEpisode(EpisodeCatalog.episode(id: id))
+            await waitForTerminal(model)
+            check("episode \(id) selectable without completing earlier episodes",
+                  model.episode.id == id && !model.state.solved)
+        }
         for (id, collection, answers, repairs) in cases {
             model.selectEpisode(EpisodeCatalog.episode(id: id))
             await waitForTerminal(model)
@@ -334,7 +388,20 @@ enum SelfTest {
         }
     }
 
-    /// Tippt Zeichen für Zeichen in das gerade fokussierte Feld.
+    private static func waitForPrompt(after previous: Int, model: AppModel) async {
+        let deadline = ContinuousClock.now + .seconds(4)
+        while model.terminalPromptCount <= previous, ContinuousClock.now < deadline {
+            try? await Task.sleep(for: .milliseconds(25))
+        }
+        try? await Task.sleep(for: .milliseconds(100))
+        await waitForTerminal(model)
+    }
+
+    private static func terminalText(_ model: AppModel) -> String {
+        String(decoding: model.terminalSurface.view.getTerminal().getBufferAsData(), as: UTF8.self)
+    }
+
+    /// Tippt Zeichen für Zeichen in das fokussierte Terminal.
     private static func type(_ text: String, into window: NSWindow) {
         for character in text {
             guard let event = NSEvent.keyEvent(
@@ -348,13 +415,23 @@ enum SelfTest {
     }
 
     private static func pressReturn(into window: NSWindow) {
+        pressKey("\r", code: 36, into: window)
+    }
+
+    private static func pressKey(_ characters: String, code: UInt16,
+                                 modifiers: NSEvent.ModifierFlags = [], into window: NSWindow,
+                                 queued: Bool = false) {
         guard let event = NSEvent.keyEvent(
-            with: .keyDown, location: .zero, modifierFlags: [],
+            with: .keyDown, location: .zero, modifierFlags: modifiers,
             timestamp: ProcessInfo.processInfo.systemUptime,
             windowNumber: window.windowNumber, context: nil,
-            characters: "\r", charactersIgnoringModifiers: "\r",
-            isARepeat: false, keyCode: 36) else { return }
-        NSApp.sendEvent(event)
+            characters: characters, charactersIgnoringModifiers: characters,
+            isARepeat: false, keyCode: code) else { return }
+        if queued {
+            NSApp.postEvent(event, atStart: false)
+        } else {
+            NSApp.sendEvent(event)
+        }
     }
 
     /// Drückt eine Schaltfläche über Accessibility, mit echtem Mausklick als Rückfallebene.
@@ -437,22 +514,6 @@ enum SelfTest {
         }
         if let root { walk(root, depth: 0) }
         return found
-    }
-
-    private static func terminalField(in window: NSWindow) -> NSTextField? {
-        var result: NSTextField?
-        func walk(_ view: NSView) {
-            guard result == nil else { return }
-            if let field = view as? NSTextField,
-               field.placeholderString == "Befehl eingeben"
-                || field.accessibilityLabel() == "Terminal-Eingabe" {
-                result = field
-                return
-            }
-            for subview in view.subviews { walk(subview) }
-        }
-        if let content = window.contentView { walk(content) }
-        return result
     }
 
     // MARK: - Belegmaterial

@@ -1,9 +1,11 @@
 import AVKit
 import SwiftUI
 import StaffelCore
-/// Hauptfenster: NavigationSplitView mit Fall/Spuren links, Inhalt rechts.
+/// Hauptfenster mit Navigation links und Einsatzrahmen rechts.
 public struct ContentView: View {
     @Bindable var model: AppModel
+    @State private var showsMissionOutline = true
+
     public init(model: AppModel) {
         self.model = model
     }
@@ -16,7 +18,36 @@ public struct ContentView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .background(Palette.paper.opacity(0.35))
+        .inspector(isPresented: missionOutlinePresented) {
+            MissionOutlineView(model: model)
+                .id(model.episode.id)
+                .inspectorColumnWidth(min: 272, ideal: 336, max: 480)
+        }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                if model.page != .briefing {
+                    Button {
+                        showsMissionOutline.toggle()
+                    } label: {
+                        Label(outlineToggleTitle, systemImage: "sidebar.trailing")
+                    }
+                    .help(outlineToggleTitle)
+                }
+            }
+        }
     }
+
+    private var missionOutlinePresented: Binding<Bool> {
+        Binding(
+            get: { model.page != .briefing && showsMissionOutline },
+            set: { if model.page != .briefing { showsMissionOutline = $0 } }
+        )
+    }
+
+    private var outlineToggleTitle: String {
+        showsMissionOutline ? "Einsatzrahmen rechts ausblenden" : "Einsatzrahmen rechts einblenden"
+    }
+
     // MARK: Sidebar
     private var sidebar: some View {
         List(selection: Binding(
@@ -55,12 +86,12 @@ public struct ContentView: View {
                                     .foregroundStyle(.secondary)
                             }
                         } icon: {
-                            Image(systemName: !model.isUnlocked(episode) ? "lock" :
+                            Image(systemName: !episode.playable ? "lock" :
                                     model.episode.id == episode.id ? "play.circle.fill" : "play.circle")
                         }
                     }
                     .buttonStyle(.plain)
-                    .disabled(model.terminalBusy || !model.isUnlocked(episode))
+                    .disabled(model.terminalBusy || !episode.playable)
                     .accessibilityLabel("Episode \(episode.id) · \(episode.title)")
                 }
             }
@@ -105,11 +136,57 @@ public struct ContentView: View {
         }
     }
 }
+
+private struct MissionOutlineView: View {
+    let model: AppModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Label("Einsatzrahmen", systemImage: "doc.text.magnifyingglass")
+                .font(.headline)
+                .accessibilityAddTraits(.isHeader)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(Space.md)
+            Divider()
+            ScrollView {
+                VStack(alignment: .leading, spacing: Space.md) {
+                    Text(model.episode.title)
+                        .font(.title3.bold())
+                        .accessibilityAddTraits(.isHeader)
+                    Text(model.episode.briefing)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                        .fixedSize(horizontal: false, vertical: true)
+                    ForEach(model.episode.tracks) { track in
+                        TrackSection(model: model, track: track, compact: true)
+                    }
+                }
+                .padding(Space.md)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .background(.bar)
+    }
+}
+
 // MARK: - Einsatzrahmen
 struct BriefingView: View {
+    private enum Video: Identifiable {
+        case trailer
+        case scene(FinaleScene)
+
+        var id: String {
+            switch self {
+            case .trailer: "trailer"
+            case .scene(let scene): scene.id
+            }
+        }
+    }
+
     @Bindable var model: AppModel
     @Environment(\.colorScheme) private var colorScheme
-    @State private var showingTrailer = false
+    @State private var video: Video?
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Space.xl) {
@@ -117,15 +194,11 @@ struct BriefingView: View {
                     .gridProbe("header", area: "page")
                 Einsatzszene(episodeID: model.episode.id, solved: model.state.solved,
                              michaActivity: $model.lastMichaInteraction,
-                             isShowingTrailer: showingTrailer, openTerminal: { model.page = .terminal },
+                             isShowingExternalVideo: video != nil, openTerminal: { model.page = .terminal },
                              openDesktop: { model.page = .desktop })
                 .gridProbe("einsatzszene", area: "page")
-                Button {
-                    showingTrailer = true
-                } label: {
-                    Label("NACHTDIFF-Trailer ansehen", systemImage: "play.circle")
-                }
-                .gridProbe("trailer", area: "page")
+                videoControls
+                    .gridProbe("trailer", area: "page")
                 if model.state.solved {
                     successBanner
                         .gridProbe("success", area: "page")
@@ -156,10 +229,35 @@ struct BriefingView: View {
             .gridArea("page")
         }
         .background(Palette.paper.opacity(colorScheme == .dark ? 0.04 : 0.25))
-        .sheet(isPresented: $showingTrailer) {
-            TrailerView()
+        .sheet(item: $video) { selected in
+            switch selected {
+            case .trailer: TrailerView()
+            case .scene(let scene): FinaleSceneView(scene: scene)
+            }
         }
     }
+
+    private var videoControls: some View {
+        HStack(spacing: Space.sm) {
+            Button {
+                video = .trailer
+            } label: {
+                Label("NACHTDIFF-Trailer ansehen", systemImage: "play.circle")
+            }
+            Menu {
+                Button("Episode 4 · Alex’ Briefing") { video = .scene(.briefing) }
+                Button("Episode 6 · Zwei Uhren") { video = .scene(.clocks) }
+                Section("Mit Handlungsspoilern") {
+                    Button("Episode 5 · Blick in den lokalen Ausgang") { video = .scene(.dispatch) }
+                    Button("Episode 7 · Schlusssequenz (Spoiler)") { video = .scene(.credits) }
+                }
+            } label: {
+                Label("Videos ansehen", systemImage: "film")
+            }
+            .fixedSize()
+        }
+    }
+
     private var header: some View {
         VStack(alignment: .leading, spacing: Space.sm) {
             Text("Episode \(model.episode.id) · \(model.episode.title)")
@@ -208,7 +306,7 @@ struct BriefingView: View {
                 }
                 ShareLink(item: FinaleHandoffView.report) { Label("Bericht teilen", systemImage: "square.and.arrow.up") }
             }
-            if let next = EpisodeCatalog.all.first(where: { $0.id == model.episode.id + 1 }), model.isUnlocked(next) {
+            if let next = EpisodeCatalog.all.first(where: { $0.id == model.episode.id + 1 && $0.playable }) {
                 Button("Weiter zu Episode \(next.id)") { model.selectEpisode(next) }
             }
         }
@@ -274,6 +372,9 @@ struct TrailerPlayer: NSViewRepresentable {
 struct TrackSection: View {
     @Bindable var model: AppModel
     let track: Track
+    var compact = false
+
+    private var inset: CGFloat { compact ? Space.sm : Space.lg }
     private var steps: [EpisodeStep] {
         model.episode.steps.filter { $0.trackID == track.id }
     }
@@ -282,20 +383,26 @@ struct TrackSection: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: Space.md) {
-            HStack {
+            let headings = compact ? AnyLayout(VStackLayout(alignment: .leading, spacing: Space.xs)) : AnyLayout(HStackLayout())
+            headings {
                 Text(track.title)
                     .font(.title3.bold())
                     .gridProbe("track-title-\(track.id)", area: "card-\(track.id)")
-                Text(track.summary)
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                Spacer()
+                if !track.summary.isEmpty {
+                    Text(track.summary)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             ForEach(steps) { step in
-                HStack(alignment: .top, spacing: Space.md) {
-                    Image(systemName: done(step) ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(done(step) ? Palette.evidenceGreen : Palette.copper)
+                let completed = done(step)
+                HStack(alignment: .top, spacing: compact ? Space.sm : Space.md) {
+                    Image(systemName: completed ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(completed ? Palette.evidenceGreen : Palette.copper)
                         .font(.title3)
+                        .accessibilityLabel(completed ? "Erledigt" : "Offen")
                     VStack(alignment: .leading, spacing: 4) {
                         Text(step.title)
                             .font(.headline)
@@ -313,7 +420,7 @@ struct TrackSection: View {
                         }
                         if let mission = BrowserMission.forEpisode(model.episode.id) {
                             if model.episode.id != 7, let answer = mission.responses[step.id] {
-                                MissionAnswerView(model: model, step: step, answer: answer)
+                                MissionAnswerView(model: model, step: step, answer: answer, compact: compact)
                             }
                             let hints = mission.stepsByID[step.id]?.hints ?? []
                             if !hints.isEmpty {
@@ -328,7 +435,7 @@ struct TrackSection: View {
                     }
                 }
             }
-            if !evidenceForTrack.isEmpty {
+            if !compact && !evidenceForTrack.isEmpty {
                 HStack(spacing: Space.md) {
                     ForEach(evidenceForTrack) { evidence in
                         EvidenceCardView(evidence: evidence, isSelected: model.selectedEvidenceIDs.contains(evidence.id)) {
@@ -339,10 +446,10 @@ struct TrackSection: View {
                 }
             }
         }
-        .padding(Space.lg)
+        .padding(inset)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 8))
-        .gridArea("card-\(track.id)", inset: Space.lg)
+        .gridArea("card-\(track.id)", inset: inset)
     }
     private func done(_ step: EpisodeStep) -> Bool {
         if model.episode.id != 0 { return model.state.isStepComplete(step.id) }
@@ -365,6 +472,7 @@ struct MissionAnswerView: View {
     let model: AppModel
     let step: EpisodeStep
     let answer: BrowserMission.Answer
+    var compact = false
     @State private var input = ""
     @State private var feedback: String?
 
@@ -375,7 +483,8 @@ struct MissionAnswerView: View {
                 Label("Antwort angenommen", systemImage: "checkmark.circle")
                     .foregroundStyle(Palette.evidenceGreen)
             } else {
-                HStack {
+                let controls = compact ? AnyLayout(VStackLayout(alignment: .leading, spacing: Space.xs)) : AnyLayout(HStackLayout())
+                controls {
                     TextField(answer.format, text: $input)
                         .onSubmit(verify)
                         .accessibilityLabel(answer.question)

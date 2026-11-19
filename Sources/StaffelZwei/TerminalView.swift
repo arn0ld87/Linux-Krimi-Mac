@@ -1,28 +1,33 @@
+import AppKit
 import SwiftUI
 import StaffelCore
+@preconcurrency import SwiftTerm
 
 // MARK: - Terminal
 
 struct TerminalView: View {
     @Bindable var model: AppModel
-    @FocusState private var inputFocused: Bool
 
     var body: some View {
         VStack(spacing: 0) {
             terminalBar
                 .gridProbe("terminal-bar", area: "terminal", edge: nil)
             Divider()
-            transcript
+            TerminalSurfaceView(surface: model.terminalSurface)
                 .gridProbe("terminal-transcript", area: "terminal", edge: nil)
-            Divider()
-            inputRow
-                .gridProbe("terminal-input", area: "terminal", edge: nil)
         }
         .background(Palette.terminalBackground)
         .foregroundStyle(Palette.terminalForeground)
-        .onAppear {
-            inputFocused = true
-            model.startLinux()
+        .task {
+            if !model.interactiveShellOpen { await model.openInteractiveTerminal() }
+        }
+        .alert("Wartung in der Spiel-VM", isPresented: $model.requestsMaintenance) {
+            Button("Abbrechen", role: .cancel) {}
+            Button("Root-Shell öffnen", role: .destructive) {
+                Task { await model.openInteractiveTerminal(maintenance: true) }
+            }
+        } message: {
+            Text("Beim Wechsel endet die aktuelle Shell-Sitzung. Root kann Systemdateien und Missionsdaten in dieser Offline-VM ändern. Mit exit öffnet sich wieder eine azubi-Shell.")
         }
         .gridArea("terminal", inset: 0)
     }
@@ -30,7 +35,7 @@ struct TerminalView: View {
     private var terminalBar: some View {
         HStack(spacing: Space.md) {
             Circle().fill(Palette.terminalPrompt).frame(width: 8, height: 8)
-            Text("azubi@rw-srv01")
+            Text(model.maintenanceShell ? "root@rw-srv01" : "azubi@rw-srv01")
                 .font(.system(.callout, design: .monospaced))
                 .foregroundStyle(Palette.terminalPrompt)
             Text(model.linuxMessage)
@@ -39,7 +44,7 @@ struct TerminalView: View {
                 .lineLimit(1)
                 .help(model.linuxMessage)
             Spacer()
-            Text(model.state.cwd)
+            Text(model.maintenanceShell ? "Wartungsmodus" : model.state.cwd)
                 .font(.system(.caption, design: .monospaced))
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
@@ -50,72 +55,100 @@ struct TerminalView: View {
         .background(Palette.terminalBackground)
     }
 
-    private var transcript: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 2) {
-                    ForEach(model.state.transcript) { entry in
-                        Text(entry.text)
-                            .font(.system(.body, design: .monospaced))
-                            .foregroundStyle(color(for: entry.kind))
-                            .textSelection(.enabled)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .id(entry.id)
-                    }
-                    Color.clear.frame(height: 1).id("bottom")
-                }
-                .padding(Space.md)
+}
+
+@MainActor
+private struct TerminalSurfaceView: NSViewRepresentable {
+    let surface: GuestTerminalSurface
+
+    func makeNSView(context: Context) -> GuestTerminalEmulator { surface.view }
+
+    func updateNSView(_ view: GuestTerminalEmulator, context: Context) {}
+
+    func makeCoordinator() -> Coordinator { Coordinator(view: surface.view) }
+
+    static func dismantleNSView(_ view: GuestTerminalEmulator, coordinator: Coordinator) {
+        coordinator.removeShortcutMonitor()
+    }
+
+    @MainActor
+    final class Coordinator {
+        private var shortcutMonitor: Any?
+
+        init(view: GuestTerminalEmulator) {
+            shortcutMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak view] event in
+                guard let view, let window = view.window, event.window === window,
+                      event.keyCode == 15,
+                      event.modifierFlags.intersection([.control, .option, .command, .shift])
+                        == [.control, .option, .command] else { return event }
+                if !event.isARepeat { view.requestMaintenance?() }
+                return nil
             }
-            .onChange(of: model.state.transcript.last?.id) {
-                withAnimation { proxy.scrollTo("bottom", anchor: .bottom) }
-            }
+        }
+
+        func removeShortcutMonitor() {
+            if let shortcutMonitor { NSEvent.removeMonitor(shortcutMonitor) }
+            shortcutMonitor = nil
+        }
+    }
+}
+
+@MainActor
+final class GuestTerminalEmulator: SwiftTerm.TerminalView {
+    var requestMaintenance: (() -> Void)?
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        guard let window else { return }
+        DispatchQueue.main.async { [weak self, weak window] in
+            guard let self, let window, self.window === window else { return }
+            window.makeFirstResponder(self)
         }
     }
 
-    private func color(for kind: TranscriptEntry.Kind) -> Color {
-        switch kind {
-        case .input: return Palette.terminalForeground
-        case .output: return Palette.terminalForeground.opacity(0.9)
-        case .error: return Palette.terminalError
-        case .system: return Palette.terminalPrompt.opacity(0.85)
+}
+
+@MainActor
+final class GuestTerminalSurface: @preconcurrency TerminalViewDelegate {
+    let view = GuestTerminalEmulator(frame: .zero)
+    private weak var model: AppModel?
+
+    init(model: AppModel) {
+        self.model = model
+        view.font = .monospacedSystemFont(ofSize: 14, weight: .regular)
+        view.nativeBackgroundColor = NSColor(Palette.terminalBackground)
+        view.nativeForegroundColor = NSColor(Palette.terminalForeground)
+        view.setAccessibilityLabel("Linux-Terminal")
+        view.terminalDelegate = self
+        view.requestMaintenance = { [weak model] in
+            guard let model, model.page == .terminal, model.interactiveShellOpen,
+                  !model.maintenanceShell, !model.requestsMaintenance else { return }
+            model.requestsMaintenance = true
         }
     }
 
-    private var inputRow: some View {
-        HStack(spacing: Space.sm) {
-            Text("azubi@rw-srv01:\(promptPath)$")
-                .font(.system(.body, design: .monospaced))
-                .foregroundStyle(Palette.terminalPrompt)
-            TextField(model.terminalBusy ? "Linux arbeitet …" : "Befehl eingeben", text: $model.terminalInput)
-                .textFieldStyle(.plain)
-                .font(.system(.body, design: .monospaced))
-                .foregroundStyle(Palette.terminalForeground)
-                .focused($inputFocused)
-                .onSubmit { model.runCommand(model.terminalInput) }
-                .accessibilityLabel("Terminal-Eingabe")
-            Button {
-                model.runCommand(model.terminalInput)
-            } label: {
-                Image(systemName: "arrow.right.circle.fill")
-            }
-            .buttonStyle(.plain)
-            .help("Befehl ausführen")
-            .accessibilityLabel("Befehl ausführen")
-            .disabled(model.terminalBusy)
-        }
-        .padding(.horizontal, Space.md)
-        .padding(.vertical, Space.md)
-        .background(Palette.terminalBackground)
+    func feed(_ bytes: Data) {
+        view.feed(byteArray: Array(bytes)[...])
     }
 
-    private var promptPath: String {
-        let home = VPath.home
-        if model.state.cwd == home { return "~" }
-        if model.state.cwd.hasPrefix(home + "/") {
-            return "~" + model.state.cwd.dropFirst(home.count)
-        }
-        return model.state.cwd
+    func clear() {
+        view.feed(text: "\u{001B}c\u{001B}[3J")
     }
+
+    func send(source: SwiftTerm.TerminalView, data: ArraySlice<UInt8>) {
+        model?.sendTerminalInput(Data(data))
+    }
+
+    func sizeChanged(source: SwiftTerm.TerminalView, newCols: Int, newRows: Int) {
+        model?.resizeTerminal(rows: newRows, cols: newCols)
+    }
+
+    func setTerminalTitle(source: SwiftTerm.TerminalView, title: String) {}
+    func hostCurrentDirectoryUpdate(source: SwiftTerm.TerminalView, directory: String?) {}
+    func scrolled(source: SwiftTerm.TerminalView, position: Double) {}
+    func rangeChanged(source: SwiftTerm.TerminalView, startY: Int, endY: Int) {}
+    func requestOpenLink(source: SwiftTerm.TerminalView, link: String, params: [String: String]) {}
+    func clipboardCopy(source: SwiftTerm.TerminalView, content: Data) {}
 }
 
 // MARK: - Aktenwand
