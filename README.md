@@ -127,9 +127,20 @@ Tipp – nach einer Weile döst er und reagiert auf „Micha wecken“.
 
 ## Bauen
 
-Voraussetzungen: Swift 6 (getestet mit 6.4.2), Command Line Tools, Python 3.11
+Voraussetzungen: Swift 6 (getestet mit 6.4.2), **vollständiges Xcode**, Python 3.11
 oder neuer, Go und `7zz`. Der erste Build lädt die per SHA-256 fixierten
-Alpine-Archive herunter – ein vollständiges Xcode wird **nicht** benötigt.
+Alpine-Archive herunter.
+
+> **Xcode ist Pflicht.** Das Terminal-Feature bringt
+> [SwiftTerm](https://github.com/migueldeicaza/SwiftTerm) als Dependency mit,
+> und SwiftTerm hat Metal-Shader im Source. Den Metal-Compiler gibt es nur im
+> vollständigen Xcode – mit reinen Command Line Tools bricht der Build an
+> `unable to spawn process 'metal'` ab. Liegt Xcode nicht im aktiven
+> Developer-Verzeichnis, genügt:
+>
+> ```bash
+> export DEVELOPER_DIR="/Pfad/zu/Xcode.app/Contents/Developer"
+> ```
 
 ```bash
 ./build.sh              # Release-Build nach dist/StaffelZwei.app
@@ -139,7 +150,7 @@ Alpine-Archive herunter – ein vollständiges Xcode wird **nicht** benötigt.
 
 Das Skript
 
-* baut mit dem SDK 26.5 der Command Line Tools (`STAFFELZWEI_SDK` überschreibt das),
+* baut gegen das SDK der aktiven Toolchain (`STAFFELZWEI_SDK` überschreibt es),
 * legt das Bundle in einem frischen Staging-Verzeichnis unter
   `~/Library/Developer/StaffelZwei/staging` an und verschiebt es danach nach `dist/`,
 * sichert ein vorhandenes `dist/StaffelZwei.app` als `StaffelZwei.app.bak-<Zeitstempel>`
@@ -174,20 +185,19 @@ Der Entry-Point steckt Toolchain, SDK und Swift-Testing-Makro-Plugin selbst
 zusammen und läuft mit eigenem frischem `APP_STORE`. Er findet SDK und Plugin
 aus der aktiven Toolchain, setzt die Flags nur wenn nötig, gibt den Exitcode
 von `swift test` unverändert zurück und wertet einen Lauf **ohne ausgeführte
-Tests als Fehler**. Fehlt SDK oder Plugin, endet er mit Exitcode 1 und einer
-Diagnose – nie mit „0 Tests grün“.
+Tests als Fehler**. Fehlt SDK, Metal-Compiler oder Plugin, endet er mit
+Exitcode 1 und einer Diagnose – nie mit „0 Tests grün“.
 
 Der rohe Aufruf, den das Skript intern verwendet:
 
 ```bash
 swift test --scratch-path "$HOME/Library/Developer/StaffelZwei/build" \
-  --sdk /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk \
-  -Xswiftc -plugin-path -Xswiftc /Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing
+  --sdk "$(xcrun --show-sdk-path)"
 ```
 
-Der `-plugin-path` ist nötig, weil das Swift-Testing-Makro-Plugin nur über
-diesen Weg gefunden wird, wenn gegen das 26.5-SDK gebaut wird. Ohne Xcode im
-Standard-SDK (27.x) wird `@State` als Makro behandelt und der Build bricht ab.
+Der `-plugin-path` ist nur für ältere Toolchains nötig, dort wo das
+Swift-Testing-Makro-Plugin nicht im Standardsuchpfad liegt. Neuere Toolchains
+bringen die Makros im Compiler mit – das Skript setzt das Flag dann nicht.
 Die Tests laufen ausschließlich in frisch erzeugten temporären Verzeichnissen
 und berühren niemals echte Nutzerdaten.
 

@@ -14,14 +14,19 @@ public final class AppModel {
     /// Meldung nach einem Speichervorgang.
     public private(set) var statusMessage: String?
     public var appearance: AppearancePreference = .system
-    public var terminalInput: String = ""
     var lastMichaInteraction = Date()
     public private(set) var terminalBusy = false
+    private(set) var interactiveShellOpen = false
+    private(set) var maintenanceShell = false
+    private(set) var terminalPromptCount = 0
+    var requestsMaintenance = false
+    @ObservationIgnored lazy var terminalSurface = GuestTerminalSurface(model: self)
+    @ObservationIgnored private var terminalRefresh: Task<Void, Never>?
+    private var terminalSize = LinuxGuest.TerminalSize()
     public private(set) var linuxConnected = false
     public private(set) var linuxMessage = "Linux bereit zum Start"
     private(set) var desktopReady = false
     private(set) var desktopMessage: String?
-    private(set) var lastUnlockedEpisode: Int
     @ObservationIgnored private var guest: LinuxGuest
     private let campaign: GameStore
 
@@ -46,10 +51,8 @@ public final class AppModel {
 
     public init(store: GameStore = GameStore()) {
         campaign = store
-        let unlocked = Self.lastUnlocked(in: store)
-        lastUnlockedEpisode = unlocked
         let selection = (try? String(contentsOf: Self.selectionURL(store), encoding: .utf8)).flatMap(Int.init)
-        let episode = EpisodeCatalog.episode(id: min(selection ?? 0, unlocked))
+        let episode = EpisodeCatalog.episode(id: selection ?? 0)
         let loaded = Self.load(Self.store(for: episode, in: store), episode: episode)
         guest = LinuxGuest(directory: loaded.store.directory, episode: episode.id)
         self.store = loaded.store
@@ -93,21 +96,6 @@ public final class AppModel {
     public var episode: Episode { engine.state.episode }
     var supportsDesktop: Bool { BrowserMission.supportsDesktop(episode.id) }
 
-    func isUnlocked(_ episode: Episode) -> Bool {
-        episode.playable && episode.id <= lastUnlockedEpisode
-    }
-
-    private static func lastUnlocked(in campaign: GameStore) -> Int {
-        var last = 3
-        for episode in EpisodeCatalog.all where episode.id >= 3 {
-            guard episode.id == last else { break }
-            guard case .loaded(let saved) = store(for: episode, in: campaign).load(),
-                  saved.episodeID == episode.id, saved.solved else { break }
-            last += 1
-        }
-        return last
-    }
-
     // MARK: Navigation
 
     public var page: AppPage {
@@ -124,7 +112,7 @@ public final class AppModel {
     var desktopMachine: VZVirtualMachine? { desktopReady ? guest.displayMachine : nil }
 
     public func selectEpisode(_ episode: Episode) {
-        guard isUnlocked(episode), !terminalBusy else { return }
+        guard episode.playable, !terminalBusy else { return }
         if episode.id == state.episodeID {
             page = .briefing
             return
@@ -134,6 +122,7 @@ public final class AppModel {
             defer { terminalBusy = false }
             do {
                 try await guest.stop()
+                resetTerminal()
                 linuxConnected = false
                 desktopReady = false
                 desktopMessage = nil
@@ -145,7 +134,6 @@ public final class AppModel {
                 engine = loaded.engine
                 guest = LinuxGuest(directory: store.directory, episode: episode.id)
                 loadWarning = loaded.warning
-                terminalInput = ""
                 page = .briefing
             } catch {
                 statusMessage = "Episodenwechsel fehlgeschlagen: \(error.localizedDescription)"
@@ -162,7 +150,6 @@ public final class AppModel {
             linuxMessage = "Der Linux-Befehl ist zu lang"
             return
         }
-        terminalInput = ""
         if supportsDesktop, command == "bildschirm" {
             page = .desktop
             return
@@ -201,6 +188,69 @@ public final class AppModel {
                 await reportLinuxError(error)
             }
         }
+    }
+
+    func openInteractiveTerminal(maintenance: Bool = false) async {
+        guard !Snapshot.requested else { return }
+        while terminalBusy, !Task.isCancelled, page == .terminal {
+            try? await Task.sleep(for: .milliseconds(35))
+        }
+        guard !Task.isCancelled, page == .terminal,
+              !interactiveShellOpen || maintenanceShell != maintenance else { return }
+        terminalBusy = true
+        defer { terminalBusy = false }
+        do {
+            try await connectLinux()
+            guest.onTerminalEvent = { [weak self] event in self?.receiveTerminalEvent(event) }
+            interactiveShellOpen = true
+            maintenanceShell = maintenance
+            try await guest.openTerminal(cwd: state.cwd, size: terminalSize, maintenance: maintenance)
+            guest.resizeTerminal(terminalSize)
+            persist()
+        } catch {
+            await reportLinuxError(error)
+        }
+    }
+
+    func sendTerminalInput(_ bytes: Data) {
+        guard interactiveShellOpen else { return }
+        guest.sendTerminal(bytes)
+    }
+
+    func resizeTerminal(rows: Int, cols: Int) {
+        let size = LinuxGuest.TerminalSize(rows: rows, cols: cols)
+        guard size != terminalSize else { return }
+        terminalSize = size
+        if interactiveShellOpen { guest.resizeTerminal(size) }
+    }
+
+    private func receiveTerminalEvent(_ event: LinuxGuest.Reply) {
+        if let bytes = event.terminalOutput { terminalSurface.feed(bytes) }
+        if event.terminalDesktop == true, supportsDesktop, page == .terminal { page = .desktop }
+        if event.terminalPrompt == true {
+            terminalPromptCount += 1
+            terminalRefresh?.cancel()
+            terminalRefresh = Task { [weak self] in
+                try? await Task.sleep(for: .milliseconds(60))
+                guard let self else { return }
+                while terminalBusy, !Task.isCancelled { try? await Task.sleep(for: .milliseconds(35)) }
+                guard !Task.isCancelled else { return }
+                refreshGuest()
+            }
+        }
+        if event.terminalClosed == true {
+            interactiveShellOpen = false
+            maintenanceShell = false
+            if page == .terminal { Task { await openInteractiveTerminal() } }
+        }
+    }
+
+    private func resetTerminal() {
+        terminalRefresh?.cancel()
+        interactiveShellOpen = false
+        maintenanceShell = false
+        requestsMaintenance = false
+        terminalSurface.clear()
     }
 
     private func connectLinux() async throws {
@@ -244,6 +294,7 @@ public final class AppModel {
 
     private func reportLinuxError(_ error: any Error) async {
         try? await guest.stop()
+        resetTerminal()
         linuxConnected = false
         desktopReady = false
         desktopMessage = nil
@@ -337,7 +388,6 @@ public final class AppModel {
             engine.setPage(.briefing)
         }
         persist()
-        if result.outcome == .accepted { lastUnlockedEpisode = Self.lastUnlocked(in: campaign) }
         return result
     }
 
@@ -352,6 +402,7 @@ public final class AppModel {
             defer { terminalBusy = false }
             do {
                 try await guest.stop()
+                resetTerminal()
                 linuxConnected = false
                 desktopReady = false
                 desktopMessage = nil
@@ -364,8 +415,6 @@ public final class AppModel {
                 }
                 store = resetStore
                 engine = fresh
-                lastUnlockedEpisode = Self.lastUnlocked(in: campaign)
-                terminalInput = ""
                 loadWarning = nil
                 statusMessage = "Spielstand zurückgesetzt."
             } catch {

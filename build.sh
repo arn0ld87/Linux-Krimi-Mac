@@ -78,6 +78,8 @@ if [[ ! -s "$guest_root/Image" || ! -s "$guest_root/initramfs.cpio.gz" ]] ||
    [[ "$here/Sources/StaffelCore/Resources/Missions.json" -nt "$guest_root/initramfs.cpio.gz" ]] ||
    [[ "$here/Resources/Einsatzszene/wiederganger-zettel.png" -nt "$guest_root/initramfs.cpio.gz" ]] ||
    [[ "$here/tools/linux-guest/main.go" -nt "$guest_root/initramfs.cpio.gz" ]] ||
+   [[ "$here/tools/linux-guest/terminal.go" -nt "$guest_root/initramfs.cpio.gz" ]] ||
+   [[ "$here/tools/linux-guest/terminal.bashrc" -nt "$guest_root/initramfs.cpio.gz" ]] ||
    [[ "$here/tools/linux-guest/missions.go" -nt "$guest_root/initramfs.cpio.gz" ]]; then
   python3 "$here/tools/build-linux-guest.py" "$guest_root" "$guest_cache"
 fi

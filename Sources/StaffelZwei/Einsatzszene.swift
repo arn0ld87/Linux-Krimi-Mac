@@ -7,7 +7,7 @@ struct Einsatzszene: View {
     let episodeID: Int
     let solved: Bool
     @Binding var michaActivity: Date
-    let isShowingTrailer: Bool
+    let isShowingExternalVideo: Bool
     let openTerminal: () -> Void
     let openDesktop: () -> Void
 
@@ -127,7 +127,7 @@ struct Einsatzszene: View {
             MaintenancePhotoView()
         }
         .sheet(item: $finaleScene) { FinaleSceneView(scene: $0) }
-        .onChange(of: isShowingTrailer) { _, showing in
+        .onChange(of: isShowingExternalVideo) { _, showing in
             if showing {
                 stop()
                 pendingWake = false
@@ -211,7 +211,7 @@ struct Einsatzszene: View {
             .background(.quaternary, in: RoundedRectangle(cornerRadius: 8))
             .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: asleep)
             .task(id: asleep) {
-                if asleep && finaleScene == nil && !isShowingTrailer && player == nil {
+                if asleep && finaleScene == nil && !isShowingExternalVideo && player == nil {
                     await animateMicha("micha-doest")
                 }
             }
