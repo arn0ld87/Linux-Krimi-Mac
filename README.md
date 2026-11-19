@@ -1,24 +1,135 @@
-# Staffel Zwei
+<p align="center">
+  <img src="docs/readme/banner.jpg" alt="Staffel Zwei — native macOS-App für den Linux-Krimi Rechenwerk Ostwind" width="100%">
+</p>
 
-Native macOS-Fassung des Linux-Krimis „Staffel 2 · Rechenwerk Ostwind“ von
-<https://alex-schneider.dev/projekte/linux-krimi-staffel-2/>.
+<p align="center">
+  <b>Ein Linux-Krimi, der im echten Terminal läuft.</b><br>
+  <sub>SwiftUI · Alpine-Linux-VM (ARM64) · offline · macOS 15+ · Bundle-ID <code>de.alex-schneider.staffelzwei</code></sub>
+</p>
 
-Staffel Zwei ist eine **offline** nutzbare SwiftUI-App für Apple Silicon.
-Spielbar sind der Probelauf und sieben weitere Fälle bis zur Übergabe im
-Staffelfinale. Folge 4 wird nach Folge 3 freigeschaltet. Danach öffnet jeder
-abgeschlossene Fall die nächste Folge. Das Terminal führt
-Befehle als `azubi` in einer lokalen Alpine-Linux-VM (ARM64) aus.
-Die VM hat eine eigene Festplatte und arbeitet ohne Netzwerkkarte
-oder freigegebene Mac-Verzeichnisse.
+<p align="center">
+  <a href="https://www.swift.org"><img alt="Swift 6" src="https://img.shields.io/badge/Swift-6.4-F05138?style=flat-square&logo=swift&logoColor=white"></a>
+  <img alt="macOS 15+" src="https://img.shields.io/badge/macOS-15%2B-000000?style=flat-square&logo=apple&logoColor=white">
+  <img alt="SwiftUI" src="https://img.shields.io/badge/SwiftUI-0A84FF?style=flat-square&logo=swift&logoColor=white">
+  <img alt="Offline" src="https://img.shields.io/badge/100%25%20offline-16A34A?style=flat-square">
+  <img alt="45 Tests grün" src="https://img.shields.io/badge/45%20Core--Tests%20gr%C3%BCn-22C55E?style=flat-square">
+  <img alt="Kein WebView" src="https://img.shields.io/badge/kein%20WebView-334155?style=flat-square">
+</p>
 
-Bundle-ID: `de.alex-schneider.staffelzwei`
+---
+
+**Staffel Zwei** ist die native macOS-Fassung des Linux-Krimis
+**„Staffel 2 · Rechenwerk Ostwind“**. Kein WebView, kein Server, keine Cloud:
+Eine SwiftUI-App, die den Fall in einer echten Alpine-Linux-VM unter Apple
+Silicon laufen lässt – im Terminal, mit `sudo`, mit Dateirechten, mit
+Audit-Logs. Du arbeitest als Azubi in der Rechenwerk Ostwind GmbH, sicherst
+Beweise, reparierst Manipulationen und erhebst den Vorwurf.
+
+Der Web-Krimi läuft als Lern- und Trainingsprojekt im Browser. Diese Repo-Fassung
+ist die native Umsetzung: Swift 6, SwiftUI, `Virtualization`-Framework, eine
+Alpine-Linux-VM mit eigener Festplatte – ohne Netzwerkkarte und ohne
+freigegebene Mac-Verzeichnisse.
+
+| | |
+|---|---|
+| **Fälle** | Probelauf + sieben Folgen bis zur Übergabe im Staffelfinale |
+| **Umgebung** | Alpine Linux 3.24 (aarch64), 1280 MB RAM, eigene Festplatte `linux-arm64.raw` |
+| **Terminal** | Pipes, Umleitungen, `grep`, `cp`, `ls -l`, `sudo` – als `azubi` |
+| **Medien** | Trailer und Sprachclips liegen im Bundle, komplett offline |
+| **Netzwerk** | Keins. Die VM hat keine Netzwerkkarte. |
+
+### Umfang
+
+* **Probelauf und sieben Folgen** – jede Folge mit Einsatzrahmen, Aktenwand,
+  Vorwurf, sprechenden Clips und einer drehbaren Serverraum-Ansicht.
+* **Linux-Desktop** – ab Folge 2 (und 4–7) öffnet **Bildschirm** (Cmd-6) den
+  echten Xorg-Desktop der VM mit XTerm, PCManFM, Bildbetrachter und Mousepad.
+  Das Wartungsfoto liegt unter `~/fotos/IMG_0417.png`, „Stand prüfen“ aktualisiert
+  die Belege nach Eingaben im grafischen Terminal.
+* **Terminal-Reiter** – interaktive Bash in der Alpine-VM. Eingaben stehen direkt
+  am Prompt. Tab vervollständigt Befehle und Pfade, die Pfeiltasten rufen den
+  Verlauf auf und Ctrl+C unterbricht laufende Befehle.
+* **Übergabe in Folge 7** – prüft vier Aussagen und den Inhalt der freigegebenen
+  Datei. Nach der Abgabe sind Bericht und Schlusssequenz verfügbar.
+* **Barrierearmut** – bei reduzierter Bewegung zeigt die App Standbilder und
+  Dialogtext statt Bewegtbild.
+
+---
+
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/readme/einsatzrahmen.png" alt="Einsatzrahmen mit Auftrag und Beweisspuren"><br><sub><b>Einsatzrahmen</b> – Auftrag, Beweisspuren, Erfolgskontrolle</sub></td>
+    <td width="50%"><img src="docs/readme/terminal.png" alt="Terminal mit Kommandos der Kaffeekasse-Reparatur"><br><sub><b>Terminal</b> – Befehle laufen als <code>azubi</code> in der VM</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/readme/aktenwand.png" alt="Aktenwand mit Dokumenten der Fallakte"><br><sub><b>Aktenwand</b> – Fundstücke, Protokolle, Verdächtige</sub></td>
+    <td><img src="docs/readme/vorwurf.png" alt="Vorwurf-Dialog nach erfolgreicher Prüfung"><br><sub><b>Vorwurf</b> – Verdächtiger plus zwei anerkannte Belege</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/readme/trailer.png" alt="Trailer im nativen Videoplayer"><br><sub><b>Trailer</b> – im nativen Player, mit Untertitelspur</sub></td>
+    <td><img src="docs/readme/hell.png" alt="Hauptansicht im hellen Erscheinungsbild"><br><sub><b>Hellmodus</b> – native macOS-Oberfläche, kein Web-Thema</sub></td>
+  </tr>
+</table>
+
+---
+
+## Der Probelauf
+
+Erster Einsatztag bei der Rechenwerk Ostwind GmbH. In `/srv/rechenwerk/uebung/`
+liegen die Kaffeekasse-Liste `kaffeekasse.csv` und ihre Sicherung
+`kaffeekasse.bak`. Nachts wurde ein Betrag verändert. Wer war es?
+
+> **Die Regel für jeden Fall:** erst Beweise sichern, dann reparieren.
+> Wer vorher repariert, löscht den Beweis.
+
+```bash
+# 1. Metadaten der Listen sichern (Besitzer, Rechte, Datum)
+ls -l /srv/rechenwerk/uebung/ > ~/belege/kasse-meta.txt
+
+# 2. Geänderte Zeile und ihr Original festhalten
+grep 2026-04-15 /srv/rechenwerk/uebung/kaffeekasse.csv >  ~/belege/kasse-zeilen.txt
+grep 2026-04-15 /srv/rechenwerk/uebung/kaffeekasse.bak >> ~/belege/kasse-zeilen.txt
+
+# 3. Liste aus der Sicherung wiederherstellen
+cp /srv/rechenwerk/uebung/kaffeekasse.bak /srv/rechenwerk/uebung/kaffeekasse.csv
+```
+
+Danach im Vorwurf den Verdächtigen **Kaffeeautomat (Dienstkonto `kaffee`)** und
+beide anerkannten Belege auswählen und „Prüfen“ auslösen.
+
+Ein Beleg ist die echte Ausgabe eines Befehls, in eine Textdatei unter
+`~/belege/` umgeleitet. Abgetippter Text zählt nicht – die App prüft, ob der
+Befehl wirklich gelaufen ist.
+
+---
+
+## Episoden
+
+| Folge | Fall | Thema |
+|---|---|---|
+| 0 · Probelauf | Die Kaffeekasse | Metadaten, Belege, Reparatur, Vorwurf |
+| 1 | Zu viele Rechte | Eine fremde `sudo`-Regel aus dem Betrieb nehmen |
+| 2 | Der Prozess, der nicht stirbt | Ein hängender Dienst im Linux-Desktop |
+| 3 | Die Lücke im Log | Was im Audit-Log fehlt |
+| 4 | Der falsche Anhang | Ein manipulierter Dateianhang |
+| 5 | Der letzte Export | Datenabfluss vor dem Feierabend |
+| 6 | Zwei Uhren | Zeitstempel, die nicht zusammenpassen |
+| 7 | Die Übergabe | Vier Aussagen prüfen und die freigegebene Datei abgeben |
+
+Folge 4 öffnet sich nach Folge 3; danach schaltet jeder gelöste Fall die
+nächste Folge frei. Die Verdächtigen: Timo Kessler, Nadia Brem,
+Margit Ostwind. Micha gibt im Einsatzrahmen pro Folge einen gesprochenen
+Tipp – nach einer Weile döst er und reagiert auf „Micha wecken“.
+
+---
 
 ## Bauen
 
-Voraussetzungen: Swift 6 (getestet mit 6.4.2), die Command Line Tools,
-Python 3.11 oder neuer, Go und `7zz`. Der Build benötigt beim ersten Lauf
-Internetzugriff für die per SHA-256 fixierten Alpine-Archive.
-Ein volles Xcode wird nicht benötigt.
+Voraussetzungen: Swift 6 (getestet mit 6.4.2), Command Line Tools, Python 3.11
+oder neuer, Go und `7zz`. Der erste Build lädt die per SHA-256 fixierten
+Alpine-Archive herunter – ein vollständiges Xcode wird **nicht** benötigt.
 
 ```bash
 ./build.sh              # Release-Build nach dist/StaffelZwei.app
@@ -26,21 +137,21 @@ Ein volles Xcode wird nicht benötigt.
 ./build.sh --install    # zusätzlich nach ~/Applications/StaffelZwei.app
 ```
 
-Das Skript:
+Das Skript
 
-- baut mit dem SDK 26.5 der Command Line Tools (`STAFFELZWEI_SDK` überschreibt das),
-- legt das Bundle in einem frischen Staging-Verzeichnis unter
+* baut mit dem SDK 26.5 der Command Line Tools (`STAFFELZWEI_SDK` überschreibt das),
+* legt das Bundle in einem frischen Staging-Verzeichnis unter
   `~/Library/Developer/StaffelZwei/staging` an und verschiebt es danach nach `dist/`,
-- sichert ein vorhandenes `dist/StaffelZwei.app` als `StaffelZwei.app.bak-<Zeitstempel>`
+* sichert ein vorhandenes `dist/StaffelZwei.app` als `StaffelZwei.app.bak-<Zeitstempel>`
   (nichts wird gelöscht),
-- legt Kernel und Startdateisystem im App-Bundle ab und signiert
+* legt Kernel und Startdateisystem im App-Bundle ab und signiert
   **ad hoc** mit dem Virtualization-Entitlement,
-- prüft am Ende `codesign --verify --deep --strict`.
+* prüft am Ende `codesign --verify --deep --strict`.
 
-Build-Artefakte liegen außerhalb des Repos:
+Build-Artefakte liegen bewusst außerhalb des Repos:
 `~/Library/Developer/StaffelZwei/build`.
 
-## Starten
+### Starten
 
 ```bash
 open dist/StaffelZwei.app
@@ -53,29 +164,18 @@ umbiegen – die App schreibt dann ausschließlich dorthin:
 open -n --env "APP_STORE=$(mktemp -d)" dist/StaffelZwei.app
 ```
 
-Ohne `APP_STORE` liegen `spielstand.json` und `linux-arm64.raw` unter
-`~/Library/Application Support/StaffelZwei/`. Beim ersten VM-Start werden die
-Kassenliste und vorhandene Missionsbelege aus älteren Spielständen übernommen.
-Die weiteren Episoden haben getrennte Abbilder unter `episoden/`. „Fortschritt
-zurücksetzen“ sichert den Spielstand und die Festplatte der aktiven Episode.
-
-## Testen
-
-Der reproduzierbare Test-Entry-Point steckt Toolchain, SDK und
-Swift-Testing-Makro-Plugin selbst zusammen und läuft mit eigenem frischen
-`APP_STORE`:
+### Testen
 
 ```bash
 ./tools/test.sh
 ```
 
-Er findet das SDK und das Plugin aus der aktiven Toolchain, setzt die Flags nur
-wenn sie nötig sind, gibt den Exitcode von `swift test` unverändert zurück und
-wertet einen Lauf **ohne ausgeführte Tests als Fehler**. Fehlt SDK oder Plugin,
-endet er mit Exitcode 1 und einer Diagnose – nie mit „0 Tests grün“.
-
-Optional überschreibbar: `STAFFELZWEI_SDK`, `STAFFELZWEI_TEST_PLUGIN`,
-`STAFFELZWEI_TEST_SCRATCH`, oder direkt `--sdk` / `--plugin-path`.
+Der Entry-Point steckt Toolchain, SDK und Swift-Testing-Makro-Plugin selbst
+zusammen und läuft mit eigenem frischem `APP_STORE`. Er findet SDK und Plugin
+aus der aktiven Toolchain, setzt die Flags nur wenn nötig, gibt den Exitcode
+von `swift test` unverändert zurück und wertet einen Lauf **ohne ausgeführte
+Tests als Fehler**. Fehlt SDK oder Plugin, endet er mit Exitcode 1 und einer
+Diagnose – nie mit „0 Tests grün“.
 
 Der rohe Aufruf, den das Skript intern verwendet:
 
@@ -85,14 +185,13 @@ swift test --scratch-path "$HOME/Library/Developer/StaffelZwei/build" \
   -Xswiftc -plugin-path -Xswiftc /Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing
 ```
 
-Der Pfad für `-plugin-path` ist nötig, weil das Swift-Testing-Makro-Plugin nur
-über diesen Weg gefunden wird, wenn gegen das 26.5-SDK gebaut wird. Ohne Xcode
-im Standard-SDK (27.x) wird `@State` als Makro behandelt und der Build bricht ab.
-
+Der `-plugin-path` ist nötig, weil das Swift-Testing-Makro-Plugin nur über
+diesen Weg gefunden wird, wenn gegen das 26.5-SDK gebaut wird. Ohne Xcode im
+Standard-SDK (27.x) wird `@State` als Makro behandelt und der Build bricht ab.
 Die Tests laufen ausschließlich in frisch erzeugten temporären Verzeichnissen
 und berühren niemals echte Nutzerdaten.
 
-## Prüfwerkzeuge
+### Prüfwerkzeuge
 
 | Werkzeug | Zweck |
 |---|---|
@@ -102,49 +201,64 @@ und berühren niemals echte Nutzerdaten.
 | `tools/check-layout-selftest.sh` | Negativ- und Positivtests für den Layout-Checker |
 | `tools/grid-lint.sh` | Rasterregeln für `Sources` |
 | `tools/windows.swift` | Fenster eines Prozesses per `--pid` auflisten |
+| `tools/make-readme-assets.sh` | Banner und Galeriebilder dieser README neu erzeugen |
 
-## Der Probelauf
+---
 
-Im Einsatzrahmen öffnet **Staffel-2-Trailer ansehen** den nativen Videoplayer.
-Der Trailer samt deutscher Untertitelspur liegt im App-Bundle und ist offline verfügbar.
+## Architektur
 
-Ziel: die veränderte Kaffeekasse-Liste (`/srv/rechenwerk/uebung/kaffeekasse.csv`)
-sichern, die Beweise ablegen, die Liste aus der Sicherung reparieren und den
-Täter überführen.
-
-```bash
-ls -l /srv/rechenwerk/uebung/ > ~/belege/kasse-meta.txt
-grep 2026-04-15 /srv/rechenwerk/uebung/kaffeekasse.csv > ~/belege/kasse-zeilen.txt
-grep 2026-04-15 /srv/rechenwerk/uebung/kaffeekasse.bak >> ~/belege/kasse-zeilen.txt
-cp /srv/rechenwerk/uebung/kaffeekasse.bak /srv/rechenwerk/uebung/kaffeekasse.csv
+```mermaid
+flowchart LR
+  subgraph App["StaffelZwei.app — native macOS 15+"]
+    UI["SwiftUI-Oberfläche<br/>Einsatzrahmen · Terminal · Aktenwand · Vorwurf"]
+    Core["StaffelCore<br/>GameEngine · TerminalShell · VirtualFS · GameStore"]
+    UI --> Core
+  end
+  subgraph VM["Alpine-Linux 3.24 · ARM64 · 1280 MB RAM"]
+    Kon["ash · coreutils · sudo"]
+    Desk["Xorg-Desktop<br/>XTerm · PCManFM · Mousepad"]
+  end
+  Save[("spielstand.json<br/>linux-arm64.raw")]
+  Medi["Trailer · Sprachclips<br/>Kernel · initramfs"]
+  Core -.->|"Linux-Desktop<br/>Folge 2 und 4–7"| VM
+  Core --> Save
+  UI --> Medi
 ```
 
-Danach im Vorwurf den Verdächtigen **Kaffeeautomat (Dienstkonto `kaffee`)** und
-beide anerkannten Belege auswählen und „Prüfen“ auslösen.
+* **`StaffelCore`** – reine Logik ohne SwiftUI: Shell-Parser, virtuelles
+  Dateisystem, Fall-Engine, Persistenz. Läuft ohne App, damit die Tests
+  schnell sind und ohne Fenster.
+* **`StaffelZwei`** – die SwiftUI-Oberfläche. `NavigationSplitView` mit
+  Einsatzrahmen, Terminal, Aktenwand, Vorwurf und Hilfe; die Episoden liegen
+  in der Sidebar.
+* **Die VM** – `Virtualization`-Framework, `VZVirtualMachine` mit 1280 MB RAM,
+  Kernel und `initramfs.cpio.gz` aus dem App-Bundle, eigene Festplatte
+  `linux-arm64.raw`. Das Display hängt als `VZVirtualMachineView` direkt in der
+  SwiftUI-Oberfläche. Das Gast-System entsteht aus Go-Binaries plus einem
+  Alpine-Minirootfs (Python) zu einem eigenen initramfs.
+* **Die Terminal-Simulation** – Folge 0 arbeitet bewusst in einer lokalen
+  Übungssimulation: keine Befehle auf deinem Mac, keine echte VM, keine
+  Netzwerkverbindung. Ab Folge 2 (und 4–7) öffnet **Bildschirm** den echten
+  Linux-Desktop mit XTerm, PCManFM, Bildbetrachter und Mousepad.
 
-Mit `uname -sm` kannst du Kernel und Architektur prüfen. Die Shell unterstützt
-Pipes, Umleitungen und weitere Shell-Ausdrücke. `clear` leert die Anzeige.
+---
 
-## Umfang
+## Daten, Sicherheit, Offline
 
-- In Episode 2 und 4–7 öffnet **Bildschirm** (Cmd-6) den Linux-Desktop mit XTerm,
-  PCManFM, Bildbetrachter und Mousepad. Das Wartungsfoto liegt unter
-  `~/fotos/IMG_0417.png`. **Stand prüfen** aktualisiert die Belege nach
-  Eingaben im grafischen Terminal.
-- Der separate Terminal-Reiter führt Befehlszeilen mit einem Zeitlimit aus.
-- Die Episoden 1–7 haben drehbare Serverraum-Ansichten und lokale Sprachclips
-  mit Alex. Der Abschlussclip wird nach dem gelösten Fall verfügbar.
-- Micha gibt im Einsatzrahmen pro Episode einen gesprochenen Tipp. Nach
-  einer Weile döst er und reagiert auf „Micha wecken“. Seine Clips wurden mit
-  seiner Stimmreferenz aus dem Trailer in Fish Audio Drama 3 gerendert.
-- Die Übergabe in Folge 7 prüft vier Aussagen und den Inhalt der freigegebenen
-  Datei. Nach der erfolgreichen Abgabe sind Bericht und Schlusssequenz verfügbar.
-- Die Ausschnitte und Michas Bewegungsclips werden lokal aus dem App-Bundle
-  abgespielt. Bei reduzierter Bewegung zeigt die App Standbilder und Dialogtext.
-- `/home/azubi` und die Kassenliste bleiben in der Linux-Festplatte erhalten.
-  Die Sicherungsdatei in der Übung ist für `azubi` schreibgeschützt.
+* Die VM hat **keine Netzwerkkarte** und **keine freigegebenen
+  Mac-Verzeichnisse**. `/home/azubi` und die Kassenliste liegen in der
+  Linux-Festplatte, nicht auf dem Mac.
+* Spielstand und VM-Festplatte liegen unter
+  `~/Library/Application Support/StaffelZwei/`. `APP_STORE` überschreibt diesen
+  Pfad; die weiteren Episoden haben getrennte Abbilder unter `episoden/`.
+* „Fortschritt zurücksetzen“ sichert Spielstand und Festplatte der aktiven
+  Episode, bevor es gelöscht wird.
+* Der Probelauf arbeitet in einer Simulation. Befehle laufen dort **nicht** auf
+  deinem Mac.
+* Im Repo liegen keine Rohdaten: Stimmproben, Fotos und WAV/M4A/HEIC sind über
+  `.gitignore` ausgeschlossen.
 
-## Kurzbefehle
+### Tastenkürzel
 
 | Taste | Wirkung |
 |---|---|
@@ -152,6 +266,8 @@ Pipes, Umleitungen und weitere Shell-Ausdrücke. `clear` leert die Anzeige.
 | Cmd-6 | Linux-Bildschirm in Folge 2 und 4–7 |
 | Cmd-Return | Vorwurf prüfen oder Übergabe abgeben |
 | Cmd-, | Einstellungen |
+
+---
 
 ## Dokumentation
 
@@ -165,3 +281,25 @@ Pipes, Umleitungen und weitere Shell-Ausdrücke. `clear` leert die Anzeige.
 | `docs/screens/INDEX.md` | Screen-Index der Web-Referenz |
 | `docs/verification/M1-REPORT.md` | Abnahmebericht: geprüft, umgesetzt, offen |
 | `docs/verification/M1-BLOCKERS-RESULT.md` | Blockerreparatur vom 18.11.2026: Änderungen, echte Exitcodes, offene Punkte |
+| `docs/verification/M1-INDEPENDENT-REVIEW.md` | unabhängige Abnahme |
+| `docs/readme/` | Banner und Galeriebilder dieser README (Regenerator: `tools/make-readme-assets.sh`) |
+
+### Stand
+
+M1 ist spielbar: **45 Core-Tests grün**, Bundle ad hoc signiert, native
+Screenshots aller Seiten. Noch offen und bewusst nicht behauptet:
+
+* echter App-Neustart mit erhaltenem Zustand (Roundtrip ist per Test belegt,
+  der Neustart selbst nicht durchgeführt),
+* VoiceOver-Vorlese (Accessibility-Rollen sind gesetzt, aber nicht geprüft),
+* Episoden 1–3 sind sichtbar gesperrt – wie in M1 gefordert.
+
+Die Details stehen in `docs/verification/M1-REPORT.md`.
+
+---
+
+## Original
+
+Der Web-Krimi: **[linux-krimi-staffel-2](https://alex-schneider.dev/projekte/linux-krimi-staffel-2/)**
+· Lern- und Trainingsprojekt zu Linux-Shell, Dateirechten, `sudo` und
+Incident-Response.
