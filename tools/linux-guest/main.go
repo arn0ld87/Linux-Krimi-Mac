@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 )
@@ -32,30 +33,44 @@ var missionFiles = map[string]string{
 }
 
 type request struct {
-	ID      string            `json:"id"`
-	Command string            `json:"command"`
-	Cwd     string            `json:"cwd"`
-	Seed    map[string]string `json:"seed"`
-	Episode int               `json:"episode"`
-	Step    string            `json:"step"`
-	Answer  string            `json:"answer"`
-	Desktop string            `json:"desktop"`
+	ID       string            `json:"id"`
+	Command  string            `json:"command"`
+	Cwd      string            `json:"cwd"`
+	Seed     map[string]string `json:"seed"`
+	Episode  int               `json:"episode"`
+	Step     string            `json:"step"`
+	Answer   string            `json:"answer"`
+	Desktop  string            `json:"desktop"`
+	Terminal string            `json:"terminal"`
+	Bytes    []byte            `json:"terminalBytes"`
+	Size     terminalSize      `json:"terminalSize"`
 }
 
 type response struct {
-	ID       string            `json:"id,omitempty"`
-	Ready    bool              `json:"ready,omitempty"`
-	Cwd      string            `json:"cwd,omitempty"`
-	Output   string            `json:"output,omitempty"`
-	Failed   bool              `json:"failed,omitempty"`
-	Files    map[string]string `json:"files"`
-	Checks   []string          `json:"checks,omitempty"`
-	Accepted bool              `json:"accepted,omitempty"`
-	Error    string            `json:"error,omitempty"`
+	ID              string            `json:"id,omitempty"`
+	Ready           bool              `json:"ready,omitempty"`
+	Cwd             string            `json:"cwd,omitempty"`
+	Output          string            `json:"output,omitempty"`
+	Failed          bool              `json:"failed,omitempty"`
+	Files           map[string]string `json:"files"`
+	Checks          []string          `json:"checks,omitempty"`
+	Accepted        bool              `json:"accepted,omitempty"`
+	Error           string            `json:"error,omitempty"`
+	TerminalOutput  []byte            `json:"terminalOutput,omitempty"`
+	TerminalPrompt  bool              `json:"terminalPrompt,omitempty"`
+	TerminalClosed  bool              `json:"terminalClosed,omitempty"`
+	TerminalDesktop bool              `json:"terminalDesktop,omitempty"`
 }
 
 func main() {
 	encoder := json.NewEncoder(os.Stdout)
+	var outputLock sync.Mutex
+	send := func(reply response) error {
+		outputLock.Lock()
+		defer outputLock.Unlock()
+		return encoder.Encode(reply)
+	}
+	terminal := interactiveTerminal{emit: send}
 	if err := mountDisk(); err != nil {
 		_ = encoder.Encode(response{Error: err.Error()})
 		select {}
@@ -64,14 +79,37 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Buffer(make([]byte, 8192), 1024*1024)
 	var active *mission
+	prepared := false
 	for scanner.Scan() {
 		var req request
 		if json.Unmarshal(scanner.Bytes(), &req) != nil {
 			continue
 		}
-		reply := handle(req, &active)
+		var reply response
+		switch req.Terminal {
+		case "input":
+			terminal.send(req.Bytes)
+			continue
+		case "resize":
+			terminal.resize(req.Size)
+			continue
+		case "start", "maintenance":
+			if !prepared {
+				reply.Error = "Die Linux-Mission ist noch nicht bereit."
+			} else if err := terminal.start(validCwd(req.Cwd), req.Size, req.Terminal == "maintenance"); err != nil {
+				reply.Error = "Terminal: " + err.Error()
+			}
+		default:
+			if req.Seed == nil {
+				req.Cwd = terminal.cwd(req.Cwd)
+			}
+			reply = handle(req, &active)
+			if req.Seed != nil && reply.Error == "" {
+				prepared = true
+			}
+		}
 		reply.ID = req.ID
-		if encoder.Encode(reply) != nil {
+		if send(reply) != nil {
 			break
 		}
 	}

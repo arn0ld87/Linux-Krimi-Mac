@@ -122,9 +122,10 @@ def build(output, cache):
 
         shutil.copyfile(HERE / "linux-guest/init.sh", root / "init")
         (root / "init").chmod(0o755)
+        shutil.copyfile(HERE / "linux-guest/terminal.bashrc", root / "staffel-terminal.bashrc")
         subprocess.run(["go", "build", "-trimpath", "-ldflags=-s -w -buildid=",
                         "-o", root / "staffel-agent", HERE / "linux-guest/main.go",
-                        HERE / "linux-guest/missions.go"],
+                        HERE / "linux-guest/missions.go", HERE / "linux-guest/terminal.go"],
                        env={**os.environ, "GOOS": "linux", "GOARCH": "arm64", "CGO_ENABLED": "0"},
                        check=True)
 
