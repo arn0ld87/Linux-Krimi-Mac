@@ -6,7 +6,7 @@ import StaffelCore
 /// Screenshot-Modus für Agenten.
 ///
 ///   APP_STORE=/tmp/m1.store APP_SNAPSHOT=/tmp/m1-shots \
-///     dist/StaffelZwei.app/Contents/MacOS/StaffelZwei
+///     dist/NACHTDIFF.app/Contents/MacOS/StaffelZwei
 ///
 /// Schreibt je Seite einen PNG in Light und Dark und legt daneben die
 /// Layout-JSON mit den Grid-Proben ab (geprüft mit tools/check-layout.swift).

@@ -60,7 +60,7 @@ struct StaffelZweiApp: App {
     @State private var model = AppModel()
     @Environment(\.openSettings) private var openSettings
     var body: some Scene {
-        WindowGroup("StaffelZwei") {
+        WindowGroup("NACHTDIFF") {
             ContentView(model: model)
                 .preferredColorScheme(model.appearance.colorScheme)
                 .overlay { if GridOverlay.enabled { GridOverlay() } }

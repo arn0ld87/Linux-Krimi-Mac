@@ -11,7 +11,7 @@ import StaffelCore
 /// Zustand, den die App selbst erzeugt hat.
 ///
 ///   APP_STORE=/tmp/m1-selftest.store APP_SELFTEST_SHOTS=/tmp/m1-selftest-shots \
-///     dist/StaffelZwei.app/Contents/MacOS/StaffelZwei --selftest
+///     dist/NACHTDIFF.app/Contents/MacOS/StaffelZwei --selftest
 @MainActor
 enum SelfTest {
     static var campaignRequested: Bool { Swift.CommandLine.arguments.contains("--campaign-selftest") }
@@ -220,7 +220,7 @@ enum SelfTest {
         try? await Task.sleep(for: .milliseconds(250))
         check("both evidences are selected", model.selectedEvidenceIDs.count == 2,
               "\(model.selectedEvidenceIDs.count) selected")
-        pressChoice("Timo Kessler", probe: "suspect-timo", in: window)
+        pressChoice("Rike Falck", probe: "suspect-timo", in: window)
         try? await Task.sleep(for: .milliseconds(250))
         pressButton("Prüfen", in: window)
         try? await Task.sleep(for: .milliseconds(400))

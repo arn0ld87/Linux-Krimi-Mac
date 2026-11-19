@@ -1,7 +1,7 @@
 #!/bin/zsh
 # Prueft die App-Pfade mit echten Exitcodes.
 #
-# Usage: tools/app-checks.sh [pfad/zum/StaffelZwei.app]
+# Usage: tools/app-checks.sh [pfad/zum/NACHTDIFF.app]
 #
 # Laeuft in dieser Reihenfolge:
 #   1. Selbsttest ohne APP_STORE      -> muss ungleich 0 enden (Negativfall)
@@ -17,7 +17,7 @@ set -uo pipefail
 
 here=${0:A:h}
 repo=${here:h}
-app="${1:-$repo/dist/StaffelZwei.app}"
+app="${1:-$repo/dist/NACHTDIFF.app}"
 binary="$app/Contents/MacOS/StaffelZwei"
 work="$repo/.worker/app-checks"
 mkdir -p "$work"
