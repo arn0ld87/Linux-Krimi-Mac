@@ -1,0 +1,30 @@
+test: sdk=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
+test: plugin=/Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing
+test: store=/var/folders/hk/9jcb416d7j14n8pwsws8ymsw0000gn/T//staffelzwei-test-store.hDbGeQ
+✔ Test "Vorwurf mit zu wenigen Belegen wird abgelehnt" passed after 0.005 seconds.
+✔ Test "~ löst unabhängig vom Arbeitsverzeichnis gegen das Home auf" passed after 0.005 seconds.
+✔ Test "Vorwurf ohne Belege aus beiden Spuren wird abgelehnt" passed after 0.005 seconds.
+✔ Test "Eine Datei mit passendem Namen, aber falschem Inhalt, ist kein Beleg" passed after 0.005 seconds.
+✔ Test "Die Backup-Datei kann auch per Umleitung nicht beschrieben werden" passed after 0.005 seconds.
+✔ Test "cd in ein nicht vorhandenes Verzeichnis wird abgelehnt" passed after 0.005 seconds.
+✔ Test "cp ueberschreibt den Inhalt, behält aber die Besitzer-Metadaten" passed after 0.005 seconds.
+✔ Test "pwd liefert das Home-Verzeichnis" passed after 0.005 seconds.
+✔ Test "Ein Neustart setzt den Zustand nicht zurueck" passed after 0.005 seconds.
+✔ Test "JSON-Roundtrip inklusive Navigation" passed after 0.005 seconds.
+✔ Test "Der vollständige Probelauf repariert die Liste und wird angenommen" passed after 0.005 seconds.
+✔ Test "Vorwurf ohne Auswahl der Belege wird abgelehnt" passed after 0.005 seconds.
+✔ Test "Belege bleiben nach der Reparatur gueltig" passed after 0.005 seconds.
+✔ Test "Ein Neustart behaelt auch die Auswahl im Vorwurf" passed after 0.005 seconds.
+✔ Test "Mehrere Dateien in einem cat" passed after 0.005 seconds.
+✔ Test "Der Zeilen-Beleg braucht beide Fassungen" passed after 0.005 seconds.
+✔ Test "Mac-Pfade existieren nicht" passed after 0.005 seconds.
+✔ Test "Store schreibt und liest den Spielstand" passed after 0.005 seconds.
+✔ Test "Reset loescht nur eigene Daten und legt ein Backup an" passed after 0.006 seconds.
+✔ Test "Pipes und Command-Substitution werden abgelehnt" passed after 0.006 seconds.
+✔ Test "Ein Store schreibt nur in sein eigenes Verzeichnis" passed after 0.006 seconds.
+✔ Test "Ein defekter Store bleibt unveraendert erhalten" passed after 0.009 seconds.
+✔ Test "Ein defekter Spielstand wird nicht still überschrieben" passed after 0.009 seconds.
+✔ Test "Ein bestätigtes Zurücksetzen hebt den Schreibschutz auf und sichert die alte Datei" passed after 0.011 seconds.
+✔ Test run with 45 tests in 0 suites passed after 0.012 seconds.
+
+PASS test: Test run with 45 tests, exit 0 (log: /var/folders/hk/9jcb416d7j14n8pwsws8ymsw0000gn/T//staffelzwei-test-store.hDbGeQ/swift-test.log)

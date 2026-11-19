@@ -1,0 +1,12 @@
+PASS no arguments: exit 2
+PASS empty probes: exit 1
+PASS broken json: exit 1
+PASS missing file: exit 1
+PASS real violation: exit 1
+PASS invalid area size: exit 1
+PASS unknown option: exit 2
+PASS valid fixture: exit 0
+PASS incomplete matrix: exit 1
+PASS complete matrix: exit 0
+
+PASS check-layout selftest: 10 cases

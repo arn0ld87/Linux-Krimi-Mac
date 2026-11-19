@@ -1,0 +1,7 @@
+/Volumes/T7/Projekte/linux-mac/Package.swift: StaffelCore: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Volumes/T7/Projekte/linux-mac/Package.swift: StaffelZwei-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Volumes/T7/Projekte/linux-mac/Package.swift: StaffelZwei-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+Build complete! (6,71 Sek.)
+codesign --verify --deep --strict: ok
+moved previous app to /Volumes/T7/Projekte/linux-mac/dist/StaffelZwei.app.bak-20261117235900
+built /Volumes/T7/Projekte/linux-mac/dist/StaffelZwei.app

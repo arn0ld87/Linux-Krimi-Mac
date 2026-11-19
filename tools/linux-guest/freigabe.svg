@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="650" viewBox="0 0 1000 650">
+  <rect width="1000" height="650" fill="#182733"/>
+  <rect x="65" y="52" width="870" height="546" rx="18" fill="#f4eddb"/>
+  <rect x="65" y="52" width="870" height="14" rx="7" fill="#e8552f"/>
+  <g font-family="Helvetica, sans-serif" fill="#1a2c39">
+    <text x="120" y="138" font-size="26">RECHENWERK OSTWIND · SCHICHTLEITUNG</text>
+    <text x="120" y="235" font-size="55" font-weight="bold">Freigabe RW-3074</text>
+    <text x="120" y="326" font-size="39" font-weight="bold">Nur Messwerte</text>
+    <text x="120" y="396" font-size="28">Erlaubte Spalten</text>
+    <text x="120" y="449" font-family="monospace" font-size="32">sensor_id  temperatur_c  zeit_utc</text>
+    <text x="120" y="532" font-size="28">Freigegeben von Margit Ostwind</text>
+  </g>
+</svg>

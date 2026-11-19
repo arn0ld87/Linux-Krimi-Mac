@@ -1,0 +1,54 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Swift / SwiftPM / Xcode
+.build/
+.swiftpm/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+Package.resolved.bak
+
+# Build-Ausgaben (App-Bundles inkl. Linux-Gast-Image, mehrere GB)
+dist/
+*.app/
+*.app.bak-*/
+*.dmg
+*.zip
+
+# Linux-Gast: generierte Kernel-/initramfs-Artefakte
+Image
+initramfs.cpio.gz
+tools/linux-guest/out/
+
+# Worker-, Agenten- und Tool-Artefakte
+.worker/
+.open-mem/
+.serena/
+.code-review-graph/
+.claude/settings.local.json
+*.har
+*.jsonl
+
+# Private Rohdaten (Stimmproben, Fotos) – Repo ist PUBLIC
+*.wav
+*.m4a
+*.HEIC
+*.heic
+/micha*.JPG
+/beispiele/
+
+# Logs / Temporäres
+*.log
+!docs/verification/*.log
+*.tmp
+*.swp
+
+# Secrets
+.env
+.env.*
+!.env.example
