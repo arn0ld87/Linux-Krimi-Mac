@@ -123,7 +123,7 @@ struct BriefingView: View {
                 Button {
                     showingTrailer = true
                 } label: {
-                    Label("Staffel-2-Trailer ansehen", systemImage: "play.circle")
+                    Label("NACHTDIFF-Trailer ansehen", systemImage: "play.circle")
                 }
                 .gridProbe("trailer", area: "page")
                 if model.state.solved {
@@ -196,9 +196,9 @@ struct BriefingView: View {
             if let message = BrowserMission.forEpisode(model.episode.id)?.resolution {
                 Text(message).font(.callout)
             } else {
-                Text("In Episode 1 – „Zu viele Rechte“ geht es weiter.")
+                Text("Auf Juris Bon stehen 0,50 Euro. Die Sicherung bestätigt Rikes 2,50 Euro. Der nächtliche Abgleich des Kaffeeautomaten hat die Buchung verändert. Rike heftet beide Fassungen zusammen. In Episode 1 wartet die nächste Akte: „Zu viele Rechte“.")
                     .font(.callout)
-                Label("Beweisstück „Die Kaffeekasse“ · Code S2-E0-KASSE", systemImage: "shippingbox")
+                Label("Beweisstück „Der Bon von 03:12 Uhr“ · Code S2-E0-KASSE", systemImage: "shippingbox")
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }
@@ -225,7 +225,7 @@ private struct TrailerView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Space.md) {
             HStack {
-                Text("Ein Linux-Krimi · Staffel 2")
+                Text("NACHTDIFF · Ein Linux-Krimi")
                     .font(.headline)
                     .accessibilityAddTraits(.isHeader)
                 Spacer()
@@ -235,7 +235,7 @@ private struct TrailerView: View {
             if let player {
                 TrailerPlayer(player: player)
                     .frame(width: 768, height: 432)
-                    .accessibilityLabel("Staffel-2-Trailer")
+                    .accessibilityLabel("NACHTDIFF-Trailer")
             } else {
                 Text("Der Trailer konnte im App-Bundle nicht gefunden werden.")
                     .foregroundStyle(.secondary)

@@ -58,13 +58,15 @@ public struct Suspect: Identifiable, Codable, Sendable, Equatable {
     public let role: String
     public let detail: String
     public let systemImage: String
+    public let portraitName: String?
 
-    public init(id: String, name: String, role: String, detail: String, systemImage: String) {
+    public init(id: String, name: String, role: String, detail: String, systemImage: String, portraitName: String? = nil) {
         self.id = id
         self.name = name
         self.role = role
         self.detail = detail
         self.systemImage = systemImage
+        self.portraitName = portraitName
     }
 }
 
@@ -177,12 +179,12 @@ public enum EpisodeCatalog {
     ]
 
     public static let suspects: [Suspect] = [
-        Suspect(id: "timo", name: "Timo Kessler", role: "Systemadministrator",
-                detail: "Trinkt den meisten Kaffee.", systemImage: "person.crop.circle"),
-        Suspect(id: "nadia", name: "Nadia Brem", role: "Datenbankverwaltung",
-                detail: "Führt die Kaffeekasse.", systemImage: "person.crop.circle"),
+        Suspect(id: "timo", name: "Rike Falck", role: "Leiterin der Spätschicht",
+                detail: "Hat den Abendabschluss um 22:05 Uhr abgezeichnet.", systemImage: "person.crop.circle", portraitName: "rike"),
+        Suspect(id: "nadia", name: "Juri Kern", role: "Techniker im Frühdienst",
+                detail: "Hat den ersten Bon gezogen und den Nachdruck abgebrochen.", systemImage: "person.crop.circle", portraitName: "juri"),
         Suspect(id: "kaffee", name: "Kaffeeautomat", role: "Dienstkonto kaffee",
-                detail: "Gleicht nachts die Kasse ab.", systemImage: "cup.and.saucer"),
+                detail: "Sein Dienstkonto darf Buchungen für den Tagesabschluss schreiben.", systemImage: "cup.and.saucer"),
     ]
 
     public static let evidenceSpecs: [EvidenceSpec] = [
@@ -236,16 +238,16 @@ public enum EpisodeCatalog {
     public static let episode0 = Episode(
         id: 0,
         key: "probelauf",
-        title: "Probelauf",
-        caseTitle: "Die Kaffeekasse",
+        title: "Nachtschicht",
+        caseTitle: "Der Bon von 03:12 Uhr",
         organization: "Rechenwerk Ostwind GmbH",
         account: "azubi",
         briefing: """
-        Erster Einsatztag bei der Rechenwerk Ostwind GmbH. Bevor es ernst wird, ein Probelauf. Hier kann nichts kaputtgehen. Du bist das Testkonto azubi.
+        Juri legt dir einen zerknitterten Bon auf die Tastatur. Für Timos Kaffee vom 15. April stehen da fünfzig Cent. Rike zieht den unterschriebenen Abendabschluss aus ihrer Jacke. Gleicher Tag, gleiche Buchung, zwei Euro fünfzig. In der Blechkasse stimmt der Betrag bis auf den letzten Cent.
 
-        In /srv/rechenwerk/uebung/ liegen die Kaffeekasse-Liste kaffeekasse.csv und ihre Sicherung kaffeekasse.bak vom Abend davor. In der Liste wurde nachts ein Betrag verändert. Wer war es?
+        Um 03:12 Uhr hat jemand die Liste neu geschrieben. Rike will die Sicherung sofort zurückspielen. Du bittest sie, die Hände von der Tastatur zu nehmen. Noch liegen beide Fassungen in /srv/rechenwerk/uebung/.
 
-        Die Regel für jeden Fall: erst Belege sichern, dann reparieren. Wer vorher repariert, löscht den Beweis.
+        Sichere als azubi die Dateidaten und beide Buchungszeilen. Erst dann kannst du die Liste wiederherstellen und sagen, welches Konto für die Änderung verantwortlich ist.
         """,
         tracks: tracks,
         evidenceSpecs: evidenceSpecs,

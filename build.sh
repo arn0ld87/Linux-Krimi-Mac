@@ -1,10 +1,10 @@
 #!/bin/zsh
-# Baut StaffelZwei nach dist/StaffelZwei.app.
+# Baut NACHTDIFF nach dist/NACHTDIFF.app.
 # Build-Produkte liegen in ~/Library/Developer/StaffelZwei, ausserhalb des Repos.
 #
 # Usage: ./build.sh              Release-Build nach dist/
 #        ./build.sh --debug      Debug-Build nach dist/
-#        ./build.sh --install    zusaetzlich nach ~/Applications/StaffelZwei.app
+#        ./build.sh --install    zusaetzlich nach ~/Applications/NACHTDIFF.app
 #
 # Sicherheitsregeln:
 #  * Es wird ausschliesslich ad-hoc signiert (kein Zertifikat, keine private
@@ -16,6 +16,7 @@
 set -euo pipefail
 here=${0:A:h}
 name="StaffelZwei"
+bundle_name="NACHTDIFF"
 scratch="$HOME/Library/Developer/$name/build"
 staging_root="$HOME/Library/Developer/$name/staging"
 guest_root="$HOME/Library/Developer/$name/linux-guest"
@@ -82,7 +83,7 @@ if [[ ! -s "$guest_root/Image" || ! -s "$guest_root/initramfs.cpio.gz" ]] ||
   python3 "$here/tools/build-linux-guest.py" "$guest_root" "$guest_cache"
 fi
 stage="$staging_root/$stamp"
-app="$stage/$name.app"
+app="$stage/$bundle_name.app"
 mkdir -p "$stage"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$bin" "$app/Contents/MacOS/$name"
@@ -108,10 +109,10 @@ codesign --verify --deep --strict "$app"
 echo "codesign --verify --deep --strict: ok"
 
 # Altes Bundle nicht zerstoeren: es wird mit Zeitstempel gesichert.
-target="$here/dist/$name.app"
+target="$here/dist/$bundle_name.app"
 mkdir -p "$here/dist"
 if [[ -e "$target" ]]; then
-  backup="$here/dist/$name.app.bak-$stamp"
+  backup="$here/dist/$bundle_name.app.bak-$stamp"
   mv "$target" "$backup"
   echo "moved previous app to $backup"
 fi
@@ -119,9 +120,9 @@ mv "$app" "$target"
 echo "built $target"
 
 if [[ "$install" == 1 ]]; then
-  install_target="$HOME/Applications/$name.app"
+  install_target="$HOME/Applications/$bundle_name.app"
   if [[ -e "$install_target" ]]; then
-    install_backup="$HOME/Applications/$name.app.bak-$stamp"
+    install_backup="$HOME/Applications/$bundle_name.app.bak-$stamp"
     mv "$install_target" "$install_backup"
     echo "moved existing app to $install_backup"
   fi

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/readme/banner.jpg" alt="Staffel Zwei — native macOS-App für den Linux-Krimi Rechenwerk Ostwind" width="100%">
+  <img src="docs/readme/banner.jpg" alt="NACHTDIFF · Ein Linux-Krimi für macOS" width="100%">
 </p>
 
 <p align="center">
@@ -18,7 +18,7 @@
 
 ---
 
-**Staffel Zwei** ist die native macOS-Fassung des Linux-Krimis
+**NACHTDIFF** ist die native macOS-Fassung des Linux-Krimis
 **„Staffel 2 · Rechenwerk Ostwind“**. Kein WebView, kein Server, keine Cloud:
 Eine SwiftUI-App, die den Fall in einer echten Alpine-Linux-VM unter Apple
 Silicon laufen lässt – im Terminal, mit `sudo`, mit Dateirechten, mit
@@ -75,11 +75,9 @@ freigegebene Mac-Verzeichnisse.
 
 ---
 
-## Der Probelauf
+## Der Bon von 03:12 Uhr
 
-Erster Einsatztag bei der Rechenwerk Ostwind GmbH. In `/srv/rechenwerk/uebung/`
-liegen die Kaffeekasse-Liste `kaffeekasse.csv` und ihre Sicherung
-`kaffeekasse.bak`. Nachts wurde ein Betrag verändert. Wer war es?
+Rikes Abendabschluss und Juris Bon weichen um zwei Euro voneinander ab. Auf dem Tisch stimmt die Kasse. Woher kommt die Differenz? In `/srv/rechenwerk/uebung/` liegen die aktuelle Buchungsliste `kaffeekasse.csv` und die Sicherung `kaffeekasse.bak`.
 
 > **Die Regel für jeden Fall:** erst Beweise sichern, dann reparieren.
 > Wer vorher repariert, löscht den Beweis.
@@ -109,7 +107,7 @@ Befehl wirklich gelaufen ist.
 
 | Folge | Fall | Thema |
 |---|---|---|
-| 0 · Probelauf | Die Kaffeekasse | Metadaten, Belege, Reparatur, Vorwurf |
+| 0 · Nachtschicht | Der Bon von 03:12 Uhr | Metadaten, Belege, Reparatur, Vorwurf |
 | 1 | Zu viele Rechte | Eine fremde `sudo`-Regel aus dem Betrieb nehmen |
 | 2 | Der Prozess, der nicht stirbt | Ein hängender Dienst im Linux-Desktop |
 | 3 | Die Lücke im Log | Was im Audit-Log fehlt |
@@ -132,9 +130,9 @@ oder neuer, Go und `7zz`. Der erste Build lädt die per SHA-256 fixierten
 Alpine-Archive herunter – ein vollständiges Xcode wird **nicht** benötigt.
 
 ```bash
-./build.sh              # Release-Build nach dist/StaffelZwei.app
+./build.sh              # Release-Build nach dist/NACHTDIFF.app
 ./build.sh --debug      # Debug-Build
-./build.sh --install    # zusätzlich nach ~/Applications/StaffelZwei.app
+./build.sh --install    # zusätzlich nach ~/Applications/NACHTDIFF.app
 ```
 
 Das Skript
@@ -142,7 +140,7 @@ Das Skript
 * baut mit dem SDK 26.5 der Command Line Tools (`STAFFELZWEI_SDK` überschreibt das),
 * legt das Bundle in einem frischen Staging-Verzeichnis unter
   `~/Library/Developer/StaffelZwei/staging` an und verschiebt es danach nach `dist/`,
-* sichert ein vorhandenes `dist/StaffelZwei.app` als `StaffelZwei.app.bak-<Zeitstempel>`
+* sichert ein vorhandenes `dist/NACHTDIFF.app` als `NACHTDIFF.app.bak-<Zeitstempel>`
   (nichts wird gelöscht),
 * legt Kernel und Startdateisystem im App-Bundle ab und signiert
   **ad hoc** mit dem Virtualization-Entitlement,
@@ -154,14 +152,14 @@ Build-Artefakte liegen bewusst außerhalb des Repos:
 ### Starten
 
 ```bash
-open dist/StaffelZwei.app
+open dist/NACHTDIFF.app
 ```
 
 Für isolierte Läufe (Tests, Screenshots) den Ablageort des Spielstands
 umbiegen – die App schreibt dann ausschließlich dorthin:
 
 ```bash
-open -n --env "APP_STORE=$(mktemp -d)" dist/StaffelZwei.app
+open -n --env "APP_STORE=$(mktemp -d)" dist/NACHTDIFF.app
 ```
 
 ### Testen
@@ -209,7 +207,7 @@ und berühren niemals echte Nutzerdaten.
 
 ```mermaid
 flowchart LR
-  subgraph App["StaffelZwei.app — native macOS 15+"]
+  subgraph App["NACHTDIFF.app — native macOS 15+"]
     UI["SwiftUI-Oberfläche<br/>Einsatzrahmen · Terminal · Aktenwand · Vorwurf"]
     Core["StaffelCore<br/>GameEngine · TerminalShell · VirtualFS · GameStore"]
     UI --> Core

@@ -323,7 +323,7 @@ struct SuspectRow: View {
             HStack(spacing: Space.md) {
                 Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
                     .foregroundStyle(isSelected ? Palette.copper : .secondary)
-                if let portrait = Einsatzbilder.load(suspect.id, "webp") {
+                if let portrait = Einsatzbilder.load(suspect.portraitName ?? suspect.id, "webp") {
                     Image(nsImage: portrait)
                         .resizable()
                         .scaledToFill()

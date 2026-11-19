@@ -82,7 +82,7 @@ magick "$TMP/bg.png" \
   -annotate +70+820 'azubi@rw-srv01:~$ grep 2026-04-15 kaffeekasse.csv' \
   \( "$TMP/icon.png" -resize 200x200 \) -geometry +110+110 -composite \
   -font "$FONT_SANS" -pointsize 116 -stroke '#ecebe3' -strokewidth 2.2 \
-  -fill '#ecebe3' -annotate +110+470 'Staffel Zwei' \
+  -fill '#ecebe3' -annotate +110+470 'NACHTDIFF' \
   -stroke none -pointsize 36 -fill '#a9ae9f' \
   -annotate +112+536 'Ein Linux-Krimi, der im echten Terminal läuft.' \
   -font "$FONT_MONO" -pointsize 26 -fill '#d97038' \
