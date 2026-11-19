@@ -1,0 +1,8 @@
+test: sdk=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
+test: plugin=/Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing
+test: store=/var/folders/hk/9jcb416d7j14n8pwsws8ymsw0000gn/T//staffelzwei-test-store.O52x54
+error: Unknown option '--review-invalid-option'
+Usage: swift test <options> <subcommand>
+  See 'test -help' for more information.
+
+FAIL test: swift test exited with 64 (log: /var/folders/hk/9jcb416d7j14n8pwsws8ymsw0000gn/T//staffelzwei-test-store.O52x54/swift-test.log)

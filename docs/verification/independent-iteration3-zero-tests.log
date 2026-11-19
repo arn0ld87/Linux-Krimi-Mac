@@ -1,0 +1,9 @@
+test: sdk=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
+test: plugin=/Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing
+test: store=/var/folders/hk/9jcb416d7j14n8pwsws8ymsw0000gn/T//staffelzwei-test-store.q7nYvw
+Building for debugging...
+Build complete! (0,22 Sek.)
+warning: No matching test cases were run
+
+FAIL test: swift test reported no executed tests (log: /var/folders/hk/9jcb416d7j14n8pwsws8ymsw0000gn/T//staffelzwei-test-store.q7nYvw/swift-test.log)
+warning: No matching test cases were run

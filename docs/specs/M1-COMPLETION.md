@@ -1,0 +1,43 @@
+# M1 fertigstellen – Ergänzung zur unveränderten M1-Spec
+
+## Autorisierung und Scope
+
+Nutzerauftrag: „Stelle M1 gegen docs/specs/M1.md fertig: fehlende User Stories, Screen-INDEX, App-Bundle und native Screens ergänzen. Umsetzung über claude-minimax im Subagenten, danach unabhängig prüfen.“
+
+Diese Ergänzung ersetzt NICHT `docs/specs/M1.md`. Arbeite den vorhandenen Stand gezielt fertig, keine Neuentwicklung. Hauptsession spezifiziert und nimmt ab. Ein Runner-Subagent startet ausschließlich den bestehenden `claude-minimax`-Wrapper und überwacht ihn; nur MiniMax ändert Implementierung/Stories/Buildskripte. Anschließend separater unabhängiger Reviewer. Keine parallelen Writer, kein Commit/Push, keine neue Dependency, keine globale Konfigurationsänderung.
+
+## Arbeitsstand / bekannte verifizierte Blocker
+
+Repo `/Volumes/T7/Projekte/linux-mac`, Branch `feature/m1-native`, noch ohne Commits. Alte MiniMax-Implementierung ist mit Exit 124 beendet; NICHT erneut starten/weiter überwachen. Altes Log `.worker/minimax-m1.log`. Vorhandene Dateien weiterverwenden: 10 Swift-Quelldateien, eine Testdatei mit 36 Tests, build.sh, Package.swift, Info.plist.in, 12 echte Referenz-PNGs und `docs/verification/M1-REPORT.md` (bisheriges negatives Abnahmeergebnis). Der Release-Compile mit SDK26.5 war erfolgreich, aber swift test hatte 33 Issues. Keine App-Paketierung oder GUI-Prüfung erfolgt.
+
+**Vor JEDEM Test-/App-Lauf zuerst Quellen lesen und Datenisolation herstellen:**
+
+1. `Sources/StaffelCore/GameStore.swift:18–25`: `init(directory:)` ignoriert den übergebenen Testpfad. Sechs Persistenztests können deshalb auf `~/Library/Application Support/StaffelZwei/spielstand.json` schreiben. Der Korruptionstest schreibt bewusst ungültiges JSON, der Reset-Test löscht. Das ist kritisch. `directory` muss Vorrang haben und tatsächlich verwendet werden; alternativ sauber eindeutig getestete Priorität explicit directory > APP_STORE > normal default. Tests dürfen nie auf echte Nutzerdaten zugreifen. Korruptionstest und Reset ausschließlich unter frisch erzeugten temporären Ordnern. Auch APP_STORE bei sämtlichen ausführbaren Prüfungen auf frisches `.worker`-Testverzeichnis oder OS-Temp setzen; keine Fremdverzeichnisse löschen. Keine weiteren Tests vor Sichtprüfung dieses Fixes. Bestehenden echten Spielstand NICHT lesen, löschen, zurücksetzen oder überschreiben; mögliche Beschädigung des alten Testlaufs bleibt als Hinweis dokumentiert, nichts erfinden/wiederherstellen.
+2. `Sources/StaffelZwei/AppModel.swift:44–58` plus persist: nach Ladefehler frischer Zustand; Navigation überschreibt kaputten Store. Schreibschutz bis explizite Nutzerentscheidung; sichtbare Fehlermeldung. Beschädigte Datei unverändert bewahren, Reset nur bestätigt und mit Backup eigener Daten. Regressionstest für den UI-/Model-Pfad oder geeignet extrahierte testbare Logik.
+3. `TerminalShell.swift:414,467–470`: Schreibregel nur Belegordner, verweigert erforderliche Reparatur via cp BAK → CSV. Erlaube exakt das berechtigte CSV-Ziel zusätzlich; Backup/andere Ordner bleiben geschützt, Dateirechte konsistent. Tests belegen Reparatur, erhaltenen CSV-Besitzer und vollständigen Probelauf.
+4. `VPath.normalize`: `~/` wird entfernt, danach cwd als Basis statt Home benutzt. Test aus anderem cwd.
+5. Shell: `cd` ändert cwd, bevor fehlerhafte Redirection erkannt wird. Fehler dürfen keine FS/cwd/Spielzustandsänderungen hinterlassen (Transaktion über Kopie oder Vorvalidierung). Regressionstest `cd /srv/rechenwerk/uebung > /etc/verboten`.
+6. Weitere bestehende rote Tests zu > / >>, Metadaten/Zeitformaten, stat, Belegen und Persistenz kausal lösen. Keine Assertions abschwächen oder Tests entfernen, um grün zu werden.
+
+## Werkzeuge / Betrieb
+
+- CRG **jetzt registriert**: Alias `linux-mac`, Root wie oben. Vor Codeexploration Minimal-Kontext/gezielte Graphabfragen; vor unabhängiger Abnahme Graph aktualisieren. Lokale Semantik provider=local, model=all-MiniLM-L6-v2 (150 Embeddings im ersten Stand), Suche `evidence` war hybrid. **Kein ungültiges HEAD~1 verwenden**, Repo ohne Commit: explizite changed_files, Full Rebuild falls nötig.
+- Große Datei-/Shellausgaben über context-mode. `ccc` als Ergänzung mit hartem Timeout nutzen, nicht auf Index warten und keine Secrets indexieren.
+- Swift-Builds nur neues natives Repo. Website-Quellrepo `/Volumes/T7/Projekte/alexle135.de` ausschließlich gezielt lesbar, niemals dort bauen/testen/ändern.
+- Toolchain Swift6.4.2, CommandLineTools, kein volles Xcode. Funktionierender Build nutzt `--sdk /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk` und Scratch `$HOME/Library/Developer/StaffelZwei/build`. Erst `swift test` nach Store-Fix, dann Release-Build.
+- Vorhandener Wrapper `claude-minimax` lädt Key aus Vaultwarden, keinen Key ausgeben. Geerbte Variablen `CLAUDECODE` und `CLAUDE_CODE_SUBAGENT_MODEL` im Child vor Wrapperaufruf entfernen; Wrapper setzt seine MiniMax-Konfiguration dann funktionsgebunden. Keine globale Shell-/Settings-Datei bearbeiten.
+- `agent-desktop` vorhanden v1.3.1, Accessibility/ScreenRecording granted. Nutze installierte Anleitung (`agent-desktop --help`, passende skill-MDs), snapshot → Ref-Aktion → snapshot. Nur native eigene App-Fenster erfassen, niemals ganzen Bildschirm oder Nutzerfenster. Kein --headed, keine globale Appearance-Änderung. Screenshotinteraktion muss wirklich gelaufen sein, keine künstlichen Bilder als Beweis. Isolierter APP_STORE zwingend.
+- `build.sh` enthält bisher `codesign --force`, automatisches Auswahl vorhandener Apple-Development-Identität und rm -rf des Zielbundles. **Vor Ausführen ändern:** keine --force/--no-verify/--no-gpg-sign; explizit ad-hoc signieren; keine private Entwicklungsidentität verwenden; vorhandene Artefakte prüfen und nicht ungefragt zerstören. Baue in neuem Staging-Verzeichnis, alte Bundles bei Bedarf erhalten, frisches .app unter dist sicher bereitstellen. Kein --install/--open gegen existierende Nutzer-App. Starte die eigene dist-App direkt isoliert. codesign --verify --deep --strict muss Exit0 liefern. Swift-Binary kopieren kann vorhandene Einzelsignatur tragen: korrekt ohne force neu paketieren, keine Sperre umgehen.
+
+## Fehlende Deliverables verbindlich ergänzen
+
+- `docs/screens/INDEX.md`: vorhandene PNGs visuell lesen, nur tatsächlich erkannte Screen/Route/Aktionen beschreiben; Coverage captured/blocked/later. Restliche zugängliche Referenz-Screens nach Bedarf mit frischem isoliertem Browser erfassen; öffentliche URLs stehen in M1. Keine pauschale Vollständigkeit bei 12 Bildern behaupten. Navigation map, command map und Datenmodell.
+- `docs/BRIEF.md`, `docs/GLOSSARY.md`, `docs/STORIES.md`, `README.md` gemäß M1; 5–10 M1-Stories mit einmaliger Aktion, referenzierten Screens, `[unit]/[self]/[snap]/[manual]`, UX-Blöcken, belegtem Status. Skills `user-stories`, `ux-design`, `mac-design`, `test-mac-app`, `build-and-verify` gezielt nutzen. Keine ungefragten Skills/Agenten-Fanouts.
+- `dist/StaffelZwei.app` tatsächlich öffnungsfähig, ad-hoc signiert, macOS nativ SwiftUI, kein WebView. Alle Core-Tests grün inklusive neuer Regressionen.
+- Native Screens unter `docs/verification/`: jede M1-Seite in Light/Dark, Settings, Vorwurf leer/gefüllt/Erfolg, Reset/Fehler wo verlangt. Interaktionen für Hauptablauf, Start/Restart-Persistenz und Tastatur prüfen. Simulationslabel sichtbar. Fehlende Prüfbarkeit explizit statt grün behaupten. Überprüfe aktive Fenster, Lesbarkeit, keine abgeschnittenen Inhalte. Datenwerte aus echt ausgeführten Befehlen, keine nur für Screen-Foto gefälschten Erfolgflags.
+- `docs/verification/M1-REPORT.md` **aktualisieren**, altes negatives Ergebnis als Vorgeschichte erhalten; neue Fakten, Befehle, Exitcodes, Testzahlen, GUI-Bedienung und Screenshotpfade, umgesetzte vs. nachgewiesene Punkte, offene manuelle Checks. MiniMax erklärt sein Ergebnis als Implementierungsbericht, nicht als unabhängige Abnahme; letzter Reviewer entscheidet separat.
+- `.gitignore` hält .worker/, dist/, .app, CRG/ccc-Daten und PNGs privat lokal. Keine externen Uploads/Publikation.
+
+## Laufzeit und Rückmeldung
+
+Arbeite in Gates: (1) Isolation/Datenschutz und Regressionen, (2) spielbarer Probelauf und grüne Tests, (3) Dokumente/Bundle, (4) echte native GUI-Nachweise. Früh bauen, sachlicher Zwischenstand an Runner nach jedem Gate. Verbringe nicht mehr als wenige Minuten mit Werkzeugproblemen. Zielbudget 35 Minuten, Runner-Hartlimit 45 Minuten; vor Budgetende immer Fortschritt/Blocker dokumentieren, kein verschwiegenes Abschneiden. Höchstens zwei gezielte Reparaturrunden pro Gate, dann konkreten Blocker melden. Keine zweite/parallel gestartete Implementierung.

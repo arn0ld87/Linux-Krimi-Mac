@@ -1,0 +1,553 @@
+Building for debugging...
+[Planning deferred tasks]
+[6 / 23] StaffelCore
+[12 / 29] StaffelCore
+[16 / 27] StaffelCore
+/Volumes/T7/Projekte/linux-mac/Package.swift: StaffelCore: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[18 / 27] StaffelCore
+[27 / 50] StaffelCoreTests-product
+error: SwiftCompile normal arm64 failed with a nonzero exit code. Command line:     cd /Volumes/T7/Projekte
+    
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/IsolationRegressionTests.swift:20:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 18 | 
+ 19 | @Test("Ein explizites Verzeichnis hat Vorrang vor APP_STORE")
+ 20 | func testExplicitDirectoryWinsOverAppStore() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 21 |     let envDir = makeTempDir("env")
+ 22 |     let explicitDir = makeTempDir("explicit")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/IsolationRegressionTests.swift:37:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 35 | 
+ 36 | @Test("Ein defekter Spielstand wird nicht still überschrieben")
+ 37 | func testCorruptStoreIsNotOverwrittenOnSave() throws {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 38 |     let dir = makeTempDir("corrupt")
+ 39 |     defer { try? FileManager.default.removeItem(at: dir) }
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/IsolationRegressionTests.swift:62:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 60 | 
+ 61 | @Test("Ein bestätigtes Zurücksetzen hebt den Schreibschutz auf und sichert die alte Datei")
+ 62 | func testLiftWriteProtectionKeepsBackup() throws {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 63 |     let dir = makeTempDir("reset")
+ 64 |     defer { try? FileManager.default.removeItem(at: dir) }
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/IsolationRegressionTests.swift:86:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 84 | 
+ 85 | @Test("Ein Store schreibt nur in sein eigenes Verzeichnis")
+ 86 | func testStoreStaysInsideItsDirectory() throws {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 87 |     let dir = makeTempDir("scope")
+ 88 |     defer { try? FileManager.default.removeItem(at: dir) }
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/IsolationRegressionTests.swift:101:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 99 | 
+100 | @Test("~ löst unabhängig vom Arbeitsverzeichnis gegen das Home auf")
+101 | func testTildeIsIndependentOfCwd() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+102 |     #expect(VPath.normalize("~/belege/kasse-meta.txt", cwd: "/srv/rechenwerk/uebung") == "/home/azubi/belege/kasse-meta.txt")
+103 |     #expect(VPath.normalize("~/belege/kasse-meta.txt", cwd: "/home/azubi") == "/home/azubi/belege/kasse-meta.txt")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/IsolationRegressionTests.swift:112:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+110 | 
+111 | @Test("Eine fehlgeschlagene Umleitung ändert weder cwd noch Dateiwelt")
+112 | func testFailedRedirectChangesNothing() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+113 |     var engine = GameEngine()
+114 |     let fsBefore = engine.state.fs
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/IsolationRegressionTests.swift:126:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+124 | 
+125 | @Test("Eine fehlgeschlagene Umleitung nach einem gültigen cd lässt den Befehl ins Leere laufen")
+126 | func testFailedRedirectAfterValidCommand() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+127 |     var engine = GameEngine()
+128 |     let cwdBefore = engine.state.cwd
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/IsolationRegressionTests.swift:141:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+139 | 
+140 | @Test("Der vollständige Probelauf repariert die Liste und wird angenommen")
+141 | func testFullProbelauf() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+142 |     var engine = GameEngine()
+143 | 
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/IsolationRegressionTests.swift:172:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+170 | 
+171 | @Test("Eine Datei mit passendem Namen, aber falschem Inhalt, ist kein Beleg")
+172 | func testEvidenceNeedsRealOutput() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+173 |     var engine = GameEngine()
+174 | 
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:18:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 16 | 
+ 17 | @Test("CSV und BAK starten unterschiedlich")
+ 18 | func initialFilesDiffer() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 19 |     let engine = makeEngine()
+ 20 |     let csvFile = engine.state.fs.file(at: csv)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:30:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 28 | 
+ 29 | @Test("Metadaten entsprechen den Vorgaben")
+ 30 | func metadataMatchesSpec() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 31 |     let engine = makeEngine()
+ 32 |     let csvMeta = engine.state.fs.file(at: csv)?.meta
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:48:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 46 | 
+ 47 | @Test("pwd liefert das Home-Verzeichnis")
+ 48 | func testPwd() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 49 |     var engine = makeEngine()
+ 50 |     let result = engine.run("pwd")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:56:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 54 | 
+ 55 | @Test("Absolute, relative und ~-Pfade lösen gleich auf")
+ 56 | func testPathForms() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 57 |     var engine = makeEngine()
+ 58 |     #expect(engine.run("cat /srv/rechenwerk/uebung/kaffeekasse.csv").output.contains("0.50"))
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:68:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 66 | 
+ 67 | @Test("cd .. und . funktionieren")
+ 68 | func testDotPaths() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 69 |     var engine = makeEngine()
+ 70 |     engine.run("cd /srv/rechenwerk/uebung")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:79:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 77 | 
+ 78 | @Test("ls -l zeigt Besitzer, Rechte und Datum")
+ 79 | func testLsLong() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 80 |     var engine = makeEngine()
+ 81 |     let result = engine.run("ls -l /srv/rechenwerk/uebung/")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:92:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 90 | 
+ 91 | @Test("stat zeigt Besitzer und Rechte")
+ 92 | func testStat() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 93 |     var engine = makeEngine()
+ 94 |     let result = engine.run("stat /srv/rechenwerk/uebung/kaffeekasse.csv")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:102:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+100 | 
+101 | @Test("grep findet Zeilen in einer Datei")
+102 | func testGrep() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+103 |     var engine = makeEngine()
+104 |     let result = engine.run("grep 2026-04-15 /srv/rechenwerk/uebung/kaffeekasse.csv")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:110:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+108 | 
+109 | @Test("Quotes werden korrekt geparst")
+110 | func testQuoting() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+111 |     var engine = makeEngine()
+112 |     engine.run("mkdir -p ~/belege")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:123:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+121 | 
+122 | @Test("Mehrere Dateien in einem cat")
+123 | func testMultipleFiles() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+124 |     var engine = makeEngine()
+125 |     let result = engine.run("cat /srv/rechenwerk/uebung/kaffeekasse.bak /srv/rechenwerk/uebung/kaffeekasse.csv")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:132:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+130 | 
+131 | @Test("> ersetzt, >> haengt an")
+132 | func testRedirection() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+133 |     var engine = makeEngine()
+134 |     engine.run("ls -l /srv/rechenwerk/uebung/ > ~/belege/kasse-meta.txt")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:157:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+155 | 
+156 | @Test("Schreiben ausserhalb von ~/belege wird abgelehnt")
+157 | func testWriteOutsideSandbox() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+158 |     var engine = makeEngine()
+159 |     let result = engine.run("echo test > /tmp/x.txt")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:165:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+163 | 
+164 | @Test("Die Sicherung ist nicht schreibbar")
+165 | func testBackupReadOnly() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+166 |     var engine = makeEngine()
+167 |     let result = engine.run("cp /srv/rechenwerk/uebung/kaffeekasse.csv /srv/rechenwerk/uebung/kaffeekasse.bak")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:173:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+171 | 
+172 | @Test("Die Backup-Datei kann auch per Umleitung nicht beschrieben werden")
+173 | func testBackupNotWritableViaRedirect() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+174 |     var engine = makeEngine()
+175 |     let result = engine.run("ls -l /srv/rechenwerk/uebung/ > /srv/rechenwerk/uebung/kaffeekasse.bak")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:181:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+179 | 
+180 | @Test("Mac-Pfade existieren nicht")
+181 | func testMacPathsDoNotExist() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+182 |     var engine = makeEngine()
+183 |     #expect(engine.run("cat /Users/alex/Desktop/secret.txt").isError)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:189:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+187 | 
+188 | @Test("Ein fehlerhafter Befehl veraendert nichts")
+189 | func testErrorDoesNotChangeState() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+190 |     var engine = makeEngine()
+191 |     let before = engine.state.fs
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:202:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+200 | 
+201 | @Test("Pipes und Command-Substitution werden abgelehnt")
+202 | func testUnsupportedSyntax() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+203 |     var engine = makeEngine()
+204 |     #expect(engine.run("ls | grep kaffee").isError)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:211:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+209 | 
+210 | @Test("cd in ein nicht vorhandenes Verzeichnis wird abgelehnt")
+211 | func testCdMissingDirectory() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+212 |     var engine = makeEngine()
+213 |     let result = engine.run("cd /srv/rechenwerk/quatsch")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:219:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+217 | 
+218 | @Test("cp ueberschreibt den Inhalt, behält aber die Besitzer-Metadaten")
+219 | func testCpKeepsMetadata() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+220 |     var engine = makeEngine()
+221 |     #expect(engine.run("cp /srv/rechenwerk/uebung/kaffeekasse.bak /srv/rechenwerk/uebung/kaffeekasse.csv").isError == false)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:231:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+229 | 
+230 | @Test("Der Metadaten-Beleg wird nach ls -l anerkannt")
+231 | func testMetadataEvidence() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+232 |     var engine = makeEngine()
+233 |     engine.run("ls -l /srv/rechenwerk/uebung/ > ~/belege/kasse-meta.txt")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:241:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+239 | 
+240 | @Test("Der Zeilen-Beleg braucht beide Fassungen")
+241 | func testRowsEvidence() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+242 |     var engine = makeEngine()
+243 |     // Die Spur "Akte" wird zuerst abgeschlossen, damit am Ende beide Spuren
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:256:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+254 | 
+255 | @Test("Reparatur allein erzeugt keine Belege")
+256 | func testRepairDoesNotCreateEvidence() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+257 |     var engine = makeEngine()
+258 |     engine.run("cp /srv/rechenwerk/uebung/kaffeekasse.bak /srv/rechenwerk/uebung/kaffeekasse.csv")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:265:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+263 | 
+264 | @Test("Belege bleiben nach der Reparatur gueltig")
+265 | func testEvidenceSurvivesRepair() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+266 |     var engine = makeEngine()
+267 |     engine.run("ls -l /srv/rechenwerk/uebung/ > ~/belege/kasse-meta.txt")
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:285:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+283 | 
+284 | @Test("Vorwurf ohne Verdächtigen wird abgelehnt")
+285 | func testAccusationWithoutSuspect() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+286 |     let engine = makeEngine()
+287 |     let result = engine.evaluateAccusation(suspectID: nil, evidenceIDs: [])
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:292:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+290 | 
+291 | @Test("Vorwurf mit zu wenigen Belegen wird abgelehnt")
+292 | func testAccusationWithTooFewEvidence() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+293 |     var engine = makeEngine()
+294 |     solveEvidence(&engine)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:304:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+302 | 
+303 | @Test("Vorwurf ohne Auswahl der Belege wird abgelehnt")
+304 | func testAccusationWithoutSelection() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+305 |     var engine = makeEngine()
+306 |     solveEvidence(&engine)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:313:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+311 | 
+312 | @Test("Vorwurf ohne Belege aus beiden Spuren wird abgelehnt")
+313 | func testAccusationNeedsBothTracks() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+314 |     var engine = makeEngine()
+315 |     solveEvidence(&engine)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:324:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+322 | 
+323 | @Test("Vorwurf vor der Reparatur wird abgelehnt")
+324 | func testAccusationBeforeRepair() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+325 |     var engine = makeEngine()
+326 |     solveEvidence(&engine)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:335:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+333 | 
+334 | @Test("Ein falscher Verdächtiger wird abgelehnt")
+335 | func testWrongSuspect() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+336 |     var engine = makeEngine()
+337 |     solveEvidence(&engine)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:348:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+346 | 
+347 | @Test("Die korrekte Loesung wird angenommen")
+348 | func testCorrectSolution() {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+349 |     var engine = makeEngine()
+350 |     solveEvidence(&engine)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:361:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+359 | 
+360 | @Test("JSON-Roundtrip inklusive Navigation")
+361 | func testJSONRoundtrip() throws {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+362 |     var engine = makeEngine()
+363 |     solveEvidence(&engine)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:386:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+384 | 
+385 | @Test("Store schreibt und liest den Spielstand")
+386 | func testStoreRoundtrip() throws {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+387 |     let dir = URL(fileURLWithPath: NSTemporaryDirectory())
+388 |         .appendingPathComponent("staffelzwei-test-\(UUID().uuidString)", isDirectory: true)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:412:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+410 | 
+411 | @Test("Ein defekter Store bleibt unveraendert erhalten")
+412 | func testCorruptStoreIsPreserved() throws {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+413 |     let dir = URL(fileURLWithPath: NSTemporaryDirectory())
+414 |         .appendingPathComponent("staffelzwei-test-\(UUID().uuidString)", isDirectory: true)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:437:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+435 | 
+436 | @Test("Reset loescht nur eigene Daten und legt ein Backup an")
+437 | func testResetOnlyOwnData() throws {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+438 |     let dir = URL(fileURLWithPath: NSTemporaryDirectory())
+439 |         .appendingPathComponent("staffelzwei-test-\(UUID().uuidString)", isDirectory: true)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:460:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+458 | 
+459 | @Test("Ein Neustart setzt den Zustand nicht zurueck")
+460 | func testRestartKeepsState() throws {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+461 |     let dir = URL(fileURLWithPath: NSTemporaryDirectory())
+462 |         .appendingPathComponent("staffelzwei-test-\(UUID().uuidString)", isDirectory: true)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift:484:6: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+482 | 
+483 | @Test("Ein Neustart behaelt auch die Auswahl im Vorwurf")
+484 | func testRestartKeepsSelection() throws {
+    |      `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+485 |     let dir = URL(fileURLWithPath: NSTemporaryDirectory())
+486 |         .appendingPathComponent("staffelzwei-test-\(UUID().uuidString)", isDirectory: true)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any Testing.TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+Failed frontend command:
+/Library/Developer/CommandLineTools/usr/bin/swift-frontend -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/StaffelZwei.build/Debug/StaffelCoreTests-p.build/DerivedSources/test_entry_point.swift /Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/IsolationRegressionTests.swift /Volumes/T7/Projekte/linux-mac/Tests/StaffelCoreTests/StaffelCoreTests.swift -target arm64-apple-macos15.0 -module-can-import-version Testing 2403 0 -disable-cross-import-overlay-search -swift-module-cross-import Testing /Library/Developer/CommandLineTools/Library/Developer/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/AppKit.swiftoverlay -swift-module-cross-import Testing /Library/Developer/CommandLineTools/Library/Developer/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/CoreGraphics.swiftoverlay -swift-module-cross-import Testing /Library/Developer/CommandLineTools/Library/Developer/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/CoreImage.swiftoverlay -swift-module-cross-import Testing /Library/Developer/CommandLineTools/Library/Developer/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/CoreTransferable.swiftoverlay -swift-module-cross-import Testing /Library/Developer/CommandLineTools/Library/Developer/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/Foundation.swiftoverlay -load-resolved-plugin /Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/libObservationMacros.dylib\#\#ObservationMacros -load-resolved-plugin /Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#\#SwiftMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/StaffelZwei.build/Debug/StaffelCoreTests-p.build/Objects-normal/arm64/StaffelCoreTests-dependencies-1.json -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk -I /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Products/Debug -Isystem /Library/Developer/CommandLineTools/Developer/usr/lib -F /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Products/Debug/PackageFrameworks -F /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Products/Debug -F /Library/Developer/CommandLineTools/Library/Developer/Frameworks -F /Library/Developer/CommandLineTools/Developer/Library/Frameworks -module-cache-path /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -swift-version 6 -Onone -D SWIFT_PACKAGE -D DEBUG -D Xcode -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Volumes/T7/Projekte -enable-anonymous-context-mangled-names -file-compilation-dir /Volumes/T7/Projekte -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/SDKStatCaches.noindex/macosx26.5-25F70-a0facfad118c1a7a18f0aad9463f6549742078817fd907cefe959747f00b8bba.sdkstatcache -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -I/Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Products/Debug/include -Xcc -I/Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/StaffelZwei.build/Debug/StaffelCoreTests-p.build/DerivedSources-normal/arm64 -Xcc -I/Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/StaffelZwei.build/Debug/StaffelCoreTests-p.build/DerivedSources/arm64 -Xcc -I/Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/StaffelZwei.build/Debug/StaffelCoreTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name StaffelCoreTests -package-name linux_mac -const-gather-protocols-file /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/StaffelZwei.build/Debug/StaffelCoreTests-p.build/Objects-normal/arm64/StaffelCoreTests_const_extract_protocols.json -disable-clang-spi -clang-target arm64-apple-macos26.5 -target-sdk-version 26.5 -target-sdk-name macosx26.5 -in-process-plugin-server-path /Library/Developer/CommandLineTools/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -emit-module-doc-path /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/StaffelZwei.build/Debug/StaffelCoreTests-p.build/Objects-normal/arm64/StaffelCoreTests.swiftdoc -emit-module-source-info-path /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/StaffelZwei.build/Debug/StaffelCoreTests-p.build/Objects-normal/arm64/StaffelCoreTests.swiftsourceinfo -serialize-diagnostics-path /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/StaffelZwei.build/Debug/StaffelCoreTests-p.build/Objects-normal/arm64/StaffelCoreTests-primary-emit-module.dia -emit-dependencies-path /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/StaffelZwei.build/Debug/StaffelCoreTests-p.build/Objects-normal/arm64/StaffelCoreTests-primary-emit-module.d -parse-as-library -o /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/StaffelZwei.build/Debug/StaffelCoreTests-p.build/Objects-normal/arm64/StaffelCoreTests.swiftmodule -emit-abi-descriptor-path /Users/alexanderschneider/Library/Developer/StaffelZwei/build/out/Intermediates.noindex/StaffelZwei.build/Debug/StaffelCoreTests-p.build/Objects-normal/arm64/StaffelCoreTests.abi.json
+error: Build failed
+error: fatalError

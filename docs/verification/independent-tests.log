@@ -1,0 +1,113 @@
+Building for debugging...
+[Planning deferred tasks]
+[2 / 19]
+[3 / 20] StaffelCore
+[9 / 26] StaffelCore
+[12 / 22] StaffelCore
+[15 / 22] StaffelZwei-product
+[24 / 32] StaffelCoreTests-product
+[28 / 36] StaffelCoreTests-product
+[29 / 37] StaffelZwei-product
+[29 / 37] StaffelCoreTests-product
+[29 / 37] StaffelZwei-product
+[33 / 37] StaffelCoreTests-product
+/Volumes/T7/Projekte/linux-mac/Package.swift: StaffelCoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Volumes/T7/Projekte/linux-mac/Package.swift: StaffelCoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Volumes/T7/Projekte/linux-mac/Package.swift: StaffelZwei-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Volumes/T7/Projekte/linux-mac/Package.swift: StaffelZwei-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[35 / 36] StaffelZwei-product
+Build complete! (3,62 Sek.)
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test "Ein defekter Spielstand wird nicht still überschrieben" started.
+◇ Test "JSON-Roundtrip inklusive Navigation" started.
+◇ Test "ls -l zeigt Besitzer, Rechte und Datum" started.
+◇ Test "Eine Datei mit passendem Namen, aber falschem Inhalt, ist kein Beleg" started.
+◇ Test "Die Sicherung ist nicht schreibbar" started.
+◇ Test "Quotes werden korrekt geparst" started.
+◇ Test "Eine fehlgeschlagene Umleitung ändert weder cwd noch Dateiwelt" started.
+◇ Test "Ein Neustart behaelt auch die Auswahl im Vorwurf" started.
+◇ Test "cd .. und . funktionieren" started.
+◇ Test "Ein fehlerhafter Befehl veraendert nichts" started.
+◇ Test "Die Backup-Datei kann auch per Umleitung nicht beschrieben werden" started.
+◇ Test "Vorwurf vor der Reparatur wird abgelehnt" started.
+◇ Test "Der Zeilen-Beleg braucht beide Fassungen" started.
+◇ Test "Vorwurf mit zu wenigen Belegen wird abgelehnt" started.
+◇ Test "Ein bestätigtes Zurücksetzen hebt den Schreibschutz auf und sichert die alte Datei" started.
+◇ Test "Metadaten entsprechen den Vorgaben" started.
+◇ Test "cd in ein nicht vorhandenes Verzeichnis wird abgelehnt" started.
+◇ Test "cp ueberschreibt den Inhalt, behält aber die Besitzer-Metadaten" started.
+◇ Test "pwd liefert das Home-Verzeichnis" started.
+◇ Test "Der vollständige Probelauf repariert die Liste und wird angenommen" started.
+◇ Test "Store schreibt und liest den Spielstand" started.
+◇ Test "Die korrekte Loesung wird angenommen" started.
+◇ Test "Ein explizites Verzeichnis hat Vorrang vor APP_STORE" started.
+◇ Test "Ein Neustart setzt den Zustand nicht zurueck" started.
+◇ Test "CSV und BAK starten unterschiedlich" started.
+◇ Test "> ersetzt, >> haengt an" started.
+◇ Test "Reset loescht nur eigene Daten und legt ein Backup an" started.
+◇ Test "Ein Store schreibt nur in sein eigenes Verzeichnis" started.
+◇ Test "Vorwurf ohne Auswahl der Belege wird abgelehnt" started.
+◇ Test "Vorwurf ohne Verdächtigen wird abgelehnt" started.
+◇ Test "Belege bleiben nach der Reparatur gueltig" started.
+◇ Test "grep findet Zeilen in einer Datei" started.
+◇ Test "Schreiben ausserhalb von ~/belege wird abgelehnt" started.
+◇ Test "Pipes und Command-Substitution werden abgelehnt" started.
+◇ Test "Ein defekter Store bleibt unveraendert erhalten" started.
+◇ Test "~ löst unabhängig vom Arbeitsverzeichnis gegen das Home auf" started.
+◇ Test "Vorwurf ohne Belege aus beiden Spuren wird abgelehnt" started.
+◇ Test "Mehrere Dateien in einem cat" started.
+◇ Test "stat zeigt Besitzer und Rechte" started.
+◇ Test "Absolute, relative und ~-Pfade lösen gleich auf" started.
+◇ Test "Eine fehlgeschlagene Umleitung nach einem gültigen cd lässt den Befehl ins Leere laufen" started.
+◇ Test "Ein falscher Verdächtiger wird abgelehnt" started.
+◇ Test "Reparatur allein erzeugt keine Belege" started.
+◇ Test "Der Metadaten-Beleg wird nach ls -l anerkannt" started.
+◇ Test "Mac-Pfade existieren nicht" started.
+✔ Test "Eine Datei mit passendem Namen, aber falschem Inhalt, ist kein Beleg" passed after 0.010 seconds.
+✔ Test "Quotes werden korrekt geparst" passed after 0.010 seconds.
+✔ Test "Ein fehlerhafter Befehl veraendert nichts" passed after 0.010 seconds.
+✔ Test "Eine fehlgeschlagene Umleitung ändert weder cwd noch Dateiwelt" passed after 0.010 seconds.
+✔ Test "Vorwurf vor der Reparatur wird abgelehnt" passed after 0.010 seconds.
+✔ Test "Der Zeilen-Beleg braucht beide Fassungen" passed after 0.010 seconds.
+✔ Test "Vorwurf mit zu wenigen Belegen wird abgelehnt" passed after 0.010 seconds.
+✔ Test "cd in ein nicht vorhandenes Verzeichnis wird abgelehnt" passed after 0.010 seconds.
+✔ Test "pwd liefert das Home-Verzeichnis" passed after 0.011 seconds.
+✔ Test "Metadaten entsprechen den Vorgaben" passed after 0.010 seconds.
+✔ Test "Die Sicherung ist nicht schreibbar" passed after 0.010 seconds.
+✔ Test "ls -l zeigt Besitzer, Rechte und Datum" passed after 0.011 seconds.
+✔ Test "Die Backup-Datei kann auch per Umleitung nicht beschrieben werden" passed after 0.010 seconds.
+✔ Test "cd .. und . funktionieren" passed after 0.010 seconds.
+✔ Test "Die korrekte Loesung wird angenommen" passed after 0.010 seconds.
+✔ Test "Der vollständige Probelauf repariert die Liste und wird angenommen" passed after 0.010 seconds.
+✔ Test "cp ueberschreibt den Inhalt, behält aber die Besitzer-Metadaten" passed after 0.010 seconds.
+✔ Test "CSV und BAK starten unterschiedlich" passed after 0.010 seconds.
+✔ Test "> ersetzt, >> haengt an" passed after 0.010 seconds.
+✔ Test "Ein explizites Verzeichnis hat Vorrang vor APP_STORE" passed after 0.010 seconds.
+✔ Test "Vorwurf ohne Auswahl der Belege wird abgelehnt" passed after 0.010 seconds.
+✔ Test "Reset loescht nur eigene Daten und legt ein Backup an" passed after 0.010 seconds.
+✔ Test "grep findet Zeilen in einer Datei" passed after 0.010 seconds.
+✔ Test "Schreiben ausserhalb von ~/belege wird abgelehnt" passed after 0.010 seconds.
+✔ Test "Belege bleiben nach der Reparatur gueltig" passed after 0.010 seconds.
+✔ Test "Pipes und Command-Substitution werden abgelehnt" passed after 0.010 seconds.
+✔ Test "Ein Store schreibt nur in sein eigenes Verzeichnis" passed after 0.010 seconds.
+✔ Test "~ löst unabhängig vom Arbeitsverzeichnis gegen das Home auf" passed after 0.010 seconds.
+✔ Test "Vorwurf ohne Verdächtigen wird abgelehnt" passed after 0.010 seconds.
+✔ Test "JSON-Roundtrip inklusive Navigation" passed after 0.011 seconds.
+✔ Test "Mehrere Dateien in einem cat" passed after 0.010 seconds.
+✔ Test "Ein Neustart behaelt auch die Auswahl im Vorwurf" passed after 0.010 seconds.
+✔ Test "Store schreibt und liest den Spielstand" passed after 0.011 seconds.
+✔ Test "Ein Neustart setzt den Zustand nicht zurueck" passed after 0.010 seconds.
+✔ Test "stat zeigt Besitzer und Rechte" passed after 0.010 seconds.
+✔ Test "Eine fehlgeschlagene Umleitung nach einem gültigen cd lässt den Befehl ins Leere laufen" passed after 0.010 seconds.
+✔ Test "Absolute, relative und ~-Pfade lösen gleich auf" passed after 0.010 seconds.
+✔ Test "Der Metadaten-Beleg wird nach ls -l anerkannt" passed after 0.010 seconds.
+✔ Test "Vorwurf ohne Belege aus beiden Spuren wird abgelehnt" passed after 0.010 seconds.
+✔ Test "Reparatur allein erzeugt keine Belege" passed after 0.010 seconds.
+✔ Test "Mac-Pfade existieren nicht" passed after 0.010 seconds.
+✔ Test "Ein falscher Verdächtiger wird abgelehnt" passed after 0.010 seconds.
+✔ Test "Ein defekter Spielstand wird nicht still überschrieben" passed after 0.174 seconds.
+✔ Test "Ein defekter Store bleibt unveraendert erhalten" passed after 0.173 seconds.
+✔ Test "Ein bestätigtes Zurücksetzen hebt den Schreibschutz auf und sichert die alte Datei" passed after 0.174 seconds.
+✔ Test run with 45 tests in 0 suites passed after 0.174 seconds.

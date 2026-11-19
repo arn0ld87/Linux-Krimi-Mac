@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_menu xmlns="http://openbox.org/3.4/menu">
+  <menu id="root-menu" label="Rechenwerk Ostwind">
+    <item label="Terminal"><action name="Execute"><command>xterm</command></action></item>
+    <item label="Dateimanager"><action name="Execute"><command>pcmanfm /home/azubi</command></action></item>
+    <item label="Wartungsfoto"><action name="Execute"><command>feh /home/azubi/fotos/IMG_0417.png</command></action></item>
+    <item label="Texteditor"><action name="Execute"><command>mousepad</command></action></item>
+  </menu>
+</openbox_menu>

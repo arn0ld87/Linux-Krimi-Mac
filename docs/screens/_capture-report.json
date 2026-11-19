@@ -1,0 +1,65 @@
+{
+  "captured": [
+    {
+      "name": "01-projektseite",
+      "file": "/Volumes/T7/Projekte/linux-mac/docs/screens/01-projektseite.png",
+      "note": "Projektseite der Web-Fassung (kein App-Screen, Kontext)"
+    },
+    {
+      "name": "02-einsatzrahmen-pager",
+      "file": "/Volumes/T7/Projekte/linux-mac/docs/screens/02-einsatzrahmen-pager.png",
+      "note": "Initialer Einsatzrahmen/Briefing im Pager über dem Terminal"
+    },
+    {
+      "name": "03-terminal",
+      "file": "/Volumes/T7/Projekte/linux-mac/docs/screens/03-terminal.png",
+      "note": "Hauptansicht Terminal (Prompt azubi@rw-srv01)"
+    },
+    {
+      "name": "04-aktenwand",
+      "file": "/Volumes/T7/Projekte/linux-mac/docs/screens/04-aktenwand.png",
+      "note": "Aktenwand / Fallakte (Belegliste, Fortschritt)"
+    },
+    {
+      "name": "05-serverraum",
+      "file": "/Volumes/T7/Projekte/linux-mac/docs/screens/05-serverraum.png",
+      "note": "Serverraum (Episodenübersicht der Web-Fassung)"
+    },
+    {
+      "name": "06-vorwurf-leer",
+      "file": "/Volumes/T7/Projekte/linux-mac/docs/screens/06-vorwurf-leer.png",
+      "note": "Vorwurf-Sheet im leeren Zustand (Belege 0)"
+    },
+    {
+      "name": "07-vorwurf-dialog",
+      "file": "/Volumes/T7/Projekte/linux-mac/docs/screens/07-vorwurf-dialog.png",
+      "note": "Bestätigungsdialog für Fortschritt löschen (nicht bestätigen)"
+    },
+    {
+      "name": "08-episode-1",
+      "file": "/Volumes/T7/Projekte/linux-mac/docs/screens/08-episode-1.png",
+      "note": "Episodenübersicht Episode 1 (Zu viele Rechte) - nur Auswahl, kein Start"
+    },
+    {
+      "name": "09-episode-2",
+      "file": "/Volumes/T7/Projekte/linux-mac/docs/screens/09-episode-2.png",
+      "note": "Episodenübersicht Episode 2 (Der Prozess, der nicht stirbt)"
+    },
+    {
+      "name": "10-episode-3",
+      "file": "/Volumes/T7/Projekte/linux-mac/docs/screens/10-episode-3.png",
+      "note": "Episodenübersicht Episode 3 (Die Lücke im Log)"
+    },
+    {
+      "name": "11-hauptansicht-dark",
+      "file": "/Volumes/T7/Projekte/linux-mac/docs/screens/11-hauptansicht-dark.png",
+      "note": "Hauptansicht im Dark Mode (Browser-Emulation, kein globales macOS-Appearance)"
+    },
+    {
+      "name": "12-hauptansicht-light",
+      "file": "/Volumes/T7/Projekte/linux-mac/docs/screens/12-hauptansicht-light.png",
+      "note": "Hauptansicht im Light Mode"
+    }
+  ],
+  "blocked": []
+}

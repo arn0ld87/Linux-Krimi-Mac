@@ -1,0 +1,2 @@
+FAIL test: Swift Testing macro plugin not found (libTestingMacros.dylib).
+      Set STAFFELZWEI_TEST_PLUGIN or pass --plugin-path.
