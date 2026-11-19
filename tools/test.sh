@@ -40,8 +40,23 @@ while (( $# > 0 )); do
 done
 
 swift_bin=$(command -v swift) || { print "FAIL test: no swift in PATH"; exit 1 }
-toolchain=$(xcode-select -p 2>/dev/null)
+# DEVELOPER_DIR hat Vorrang vor xcode-select: mit Xcode als aktiver Toolchain
+# liegt der Metal-Compiler (SwiftTerm) nur dort, nicht in den Command Line Tools.
+toolchain=${DEVELOPER_DIR:-$(xcode-select -p 2>/dev/null)}
 [[ -n "$toolchain" && -d "$toolchain" ]] || toolchain=${swift_bin:A:h:h}
+
+# --- Metal-Compiler --------------------------------------------------------
+# SwiftTerm bringt Metal-Shader mit. Den metal-Compiler gibt es nur im
+# vollstaendigen Xcode; mit reinen Command Line Tools bricht der Build ab
+# ("unable to spawn process 'metal'"). Das ist ein Toolchain-Problem, kein
+# Code-Problem - also hier klar benennen statt als undurchsichtigen
+# Build-Fehler zu melden.
+if ! xcrun -f metal >/dev/null 2>&1; then
+  print "FAIL test: no Metal compiler in the active toolchain ($toolchain)."
+  print "      SwiftTerm needs it. Install Xcode or point DEVELOPER_DIR at it:"
+  print "      export DEVELOPER_DIR=\"/Applications/Xcode.app/Contents/Developer\""
+  exit 1
+fi
 
 # --- SDK -------------------------------------------------------------------
 # Das macOS-27-SDK der Command Line Tools deklariert `@State` als Macro und
@@ -92,12 +107,15 @@ if [[ -z "$plugin" ]]; then
   fi
 fi
 if (( needs_plugin_path )); then
-  if [[ -z "$plugin" || ! -f "$plugin/libTestingMacros.dylib" ]]; then
-    print "FAIL test: Swift Testing macro plugin not found (libTestingMacros.dylib)."
-    print "      Set STAFFELZWEI_TEST_PLUGIN or pass --plugin-path."
-    exit 1
+  if [[ -n "$plugin" && -f "$plugin/libTestingMacros.dylib" ]]; then
+    plugin_args=(-Xswiftc -plugin-path -Xswiftc "$plugin")
+  else
+    # Aeltere Toolchains brauchen das Plugin, neuere bringen die Testing-Makros
+    # im Compiler mit. Ohne Plugin einfach bauen - ein Fehler kommt dann aus dem
+    # Build und wird dort sauber protokolliert.
+    print "test: no libTestingMacros.dylib found - building without -plugin-path"
+    plugin_args=()
   fi
-  plugin_args=(-Xswiftc -plugin-path -Xswiftc "$plugin")
 fi
 
 # --- Frischer Store --------------------------------------------------------
