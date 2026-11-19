@@ -360,8 +360,8 @@ struct SuspectRow: View {
                     Image(nsImage: portrait)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 44, height: 44)
-                        .clipShape(Circle())
+                        .frame(width: 64, height: 72)
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
                         .accessibilityHidden(true)
                 } else {
                     Image(systemName: suspect.systemImage)
